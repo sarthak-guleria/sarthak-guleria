@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarthak Guleria</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23faf8f5' width='100' height='100' rx='12'/><text x='50' y='72' font-family='Brush Script MT, cursive' font-size='58' font-style='italic' fill='%231a1a1a' text-anchor='middle'>S</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #faf8f5;
+            --bg-subtle: #f5f2ed;
+            --ink: #1a1a1a;
+            --ink-light: #4a4a4a;
+            --ink-faded: #888;
+            --accent: #2c5530;
+            --accent-light: #e8f0e8;
+            --border: #e5e2dd;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            line-height: 1.75;
+            font-size: 17px;
+        }
+
+        /* Stage 0: Closed */
+        .closed-state {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .closed-state.hidden {
+            display: none;
+        }
+
+        .closed-intro {
+            max-width: 400px;
+            margin-bottom: 32px;
+        }
+
+        .closed-intro p {
+            color: var(--ink-light);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .reveal-btn {
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+            cursor: pointer;
+            padding: 14px 28px;
+            border: 1px solid var(--ink);
+            background: transparent;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .reveal-btn:hover {
+            background: var(--ink);
+            color: var(--bg);
+        }
+
+        /* Map State */
+        .map-state {
+            display: none;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 60px 24px 100px;
+            opacity: 0;
+        }
+
+        .map-state.visible {
+            display: block;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .map-header {
+            text-align: center;
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .map-title {
+            font-family: 'Caveat', cursive;
+            font-size: 42px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--ink);
+        }
+
+        .map-subtitle {
+            color: var(--ink-faded);
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Progress tracker */
+        .progress-tracker {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .footstep {
+            width: 8px;
+            height: 8px;
+            border: 1.5px solid var(--border);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .footstep.visited {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 13px;
+            color: var(--ink-faded);
+            margin-bottom: 40px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Paths */
+        .paths-list {
+            list-style: none;
+        }
+
+        .path-item {
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .path-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .path-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--ink-light);
+            transition: color 0.2s;
+        }
+
+        .path-item.visited .path-title {
+            color: var(--ink);
+        }
+
+        .path-header:hover .path-title {
+            color: var(--ink);
+        }
+
+        .path-toggle {
+            font-size: 18px;
+            color: var(--ink-faded);
+            transition: transform 0.3s;
+            font-weight: 300;
+        }
+
+        .path-item.open .path-toggle {
+            transform: rotate(45deg);
+        }
+
+        /* Path content */
+        .path-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+
+        .path-item.open .path-content {
+            max-height: 1200px;
+            opacity: 1;
+            padding-bottom: 28px;
+        }
+
+        .path-opening {
+            color: var(--ink-light);
+            margin-bottom: 24px;
+            padding-left: 16px;
+            border-left: 2px solid var(--accent);
+            font-style: italic;
+        }
+
+        /* Checkpoints */
+        .checkpoints {
+            list-style: none;
+        }
+
+        .checkpoint {
+            margin-bottom: 4px;
+        }
+
+        .checkpoint-header {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            padding: 8px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkpoint-marker {
+            color: var(--ink-faded);
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .checkpoint.visited .checkpoint-marker {
+            color: var(--accent);
+        }
+
+        .checkpoint-title {
+            font-size: 15px;
+            color: var(--ink-light);
+            transition: color 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .checkpoint-header:hover .checkpoint-title {
+            color: var(--ink);
+        }
+
+        .checkpoint-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.25s ease-out, padding 0.3s ease-out;
+            opacity: 0;
+            padding: 0 0 0 22px;
+            color: var(--ink-light);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .checkpoint.open .checkpoint-content {
+            max-height: 200px;
+            opacity: 1;
+            padding: 4px 0 16px 22px;
+        }
+
+        .checkpoint.open .checkpoint-title {
+            color: var(--ink);
+        }
+
+        /* Writing section - different style */
+        .writing-path .path-content {
+            padding-left: 0;
+        }
+
+        .writing-list {
+            list-style: none;
+        }
+
+        .writing-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .writing-item:last-child {
+            border-bottom: none;
+        }
+
+        .writing-item a {
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .writing-item a:hover {
+            color: var(--accent);
+        }
+
+        .writing-item .date {
+            font-size: 13px;
+            color: var(--ink-faded);
+            font-family: 'Inter', sans-serif;
+            margin-top: 4px;
+        }
+
+        .writing-placeholder {
+            color: var(--ink-faded);
+            font-style: italic;
+            font-size: 15px;
+        }
+
+        /* Hidden section - reward */
+        .hidden-section {
+            display: none;
+            margin-top: 48px;
+            padding: 32px;
+            background: var(--bg-subtle);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .hidden-section.revealed {
+            display: block;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .hidden-section > p {
+            color: var(--ink-light);
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .hidden-cta-text {
+            margin-top: 32px;
+        }
+
+        .testimonials {
+            text-align: left;
+            margin: 24px 0;
+        }
+
+        .testimonial {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .testimonial:last-child {
+            border-bottom: none;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: var(--ink-light);
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        .testimonial-author {
+            font-size: 13px;
+            color: var(--ink-faded);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hidden-section .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .hidden-section a,
+        .hidden-section button {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--ink);
+            color: var(--bg);
+            border: 1px solid var(--ink);
+        }
+
+        .btn-primary:hover {
+            background: var(--ink-light);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--ink);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--ink);
+        }
+
+        /* Footer */
+        .map-footer {
+            margin-top: 64px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--ink-faded);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--ink);
+        }
+
+        .reset-btn {
+            color: var(--ink-faded);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: inherit;
+            transition: color 0.2s;
+        }
+
+        .reset-btn:hover {
+            color: var(--ink);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--ink);
+            color: var(--bg);
+            padding: 12px 24px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            border-radius: 4px;
+            opacity: 0;
+            transition: all 0.4s ease-out;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            .map-title {
+                font-size: 32px;
+            }
+
+            .closed-intro p {
+                font-size: 16px;
+            }
+
+            .path-title {
+                font-size: 16px;
+            }
+
+            .map-footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .hidden-section .cta-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stage 0: Closed -->
+    <div class="closed-state" id="closedState">
+        <div class="closed-intro">
+            <p>
+                This isn't a resume.<br>
+                It's a map of decisions, systems, and trade-offs.
+            </p>
+        </div>
+        <button class="reveal-btn" onclick="revealMap()">
+            See how I think
+        </button>
+    </div>
+
+    <!-- Map State -->
+    <div class="map-state" id="mapState">
+        <header class="map-header">
+            <h1 class="map-title">Sarthak Guleria</h1>
+            <p class="map-subtitle">Product & Payments</p>
+        </header>
+
+        <div class="progress-tracker" id="progressTracker">
+            <span class="footstep" data-path="0"></span>
+            <span class="footstep" data-path="1"></span>
+            <span class="footstep" data-path="2"></span>
+            <span class="footstep" data-path="3"></span>
+            <span class="footstep" data-path="4"></span>
+            <span class="footstep" data-path="5"></span>
+        </div>
+
+        <p class="progress-text" id="progressText"></p>
+
+        <ul class="paths-list" id="pathsList">
+            <!-- Path 1 -->
+            <li class="path-item" data-path="0">
+                <div class="path-header" onclick="togglePath(this)">
+                    <span class="path-title">Incentives & Trust</span>
+                    <span class="path-toggle">+</span>
+                </div>
+                <div class="path-content">
+                    <p class="path-opening">
+                        Incentives are easy to add and hard to remove.<br>
+                        Most systems fail because they reward the wrong behavior for too long.
+                    </p>
+                    <ul class="checkpoints">
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">A system that worked (temporarily)</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                The MilkyWay points program drove participation quickly — contributing to $20M+ in staked assets. But the real work started once patterns emerged and abuse vectors became visible.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Where incentives started getting gamed</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Certain behaviors looked healthy on dashboards but felt wrong when mapped to actual usage.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">A trade-off I underestimated</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Short-term activity versus long-term trust isn't a neutral choice. It always compounds.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">What I do differently now</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Incentives need decay, friction, and iteration. Static rewards don't survive contact with users.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Path 2 -->
+            <li class="path-item" data-path="1">
+                <div class="path-header" onclick="togglePath(this)">
+                    <span class="path-title">Growth Under Constraints</span>
+                    <span class="path-toggle">+</span>
+                </div>
+                <div class="path-content">
+                    <p class="path-opening">
+                        Growth is rarely blocked by distribution.<br>
+                        It's blocked by friction nobody wants to own.<br>
+                        At MilkyWay, I grew the community from zero to 50K+ followers.
+                    </p>
+                    <ul class="checkpoints">
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Initia testnet: what actually drove participation</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Clear tasks, low ambiguity, and visible progress mattered more than hype.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Where onboarding friction showed up</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Drop-offs almost always pointed to UX issues, not lack of interest.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Why community growth only works with product clarity</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Engagement without understanding creates noise, not users.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">What I stopped doing despite pressure</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Some growth levers create activity but destroy signal. I stopped pulling them.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Path 3 -->
+            <li class="path-item" data-path="2">
+                <div class="path-header" onclick="togglePath(this)">
+                    <span class="path-title">Payments: Where Things Break</span>
+                    <span class="path-toggle">+</span>
+                </div>
+                <div class="path-content">
+                    <p class="path-opening">
+                        Payments don't forgive bad assumptions.<br>
+                        Users feel mistakes immediately.
+                    </p>
+                    <ul class="checkpoints">
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Why payments UX exposes product flaws</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Confusion shows up as hesitation, retries, or silent churn.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">What most fintech landing pages hide</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Fees, limits, and edge cases are buried because they're inconvenient.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Where users lose trust first</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Not during failure — during ambiguity.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Why clarity beats features</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Fewer options, clearly explained, outperform flexibility without context.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Path 4 -->
+            <li class="path-item" data-path="3">
+                <div class="path-header" onclick="togglePath(this)">
+                    <span class="path-title">Things That Didn't Work</span>
+                    <span class="path-toggle">+</span>
+                </div>
+                <div class="path-content">
+                    <p class="path-opening">
+                        Some decisions looked right on paper and failed in reality.
+                    </p>
+                    <ul class="checkpoints">
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">A points multiplier that backfired</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Increased activity masked worsening behavior quality. The metrics looked healthy, but the users it attracted weren't the ones who stayed.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">A referral incentive that created noise</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                It brought attention without intent. The numbers went up, but signal-to-noise ratio tanked and feedback became harder to trust.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Listening too literally to feedback</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Users describe symptoms better than causes.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">What this taught me about second-order effects</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Every lever creates shadows you don't see immediately.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Path 5 -->
+            <li class="path-item" data-path="4">
+                <div class="path-header" onclick="togglePath(this)">
+                    <span class="path-title">What I'm Building — PayCabal</span>
+                    <span class="path-toggle">+</span>
+                </div>
+                <div class="path-content">
+                    <p class="path-opening">
+                        PayCabal is an independent comparison tool for crypto payment cards, fees, and real-world usability.<br>
+                        It exists because payment products are easier to sell than to understand.
+                    </p>
+                    <ul class="checkpoints">
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">The confusion that triggered it</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Comparing cards and payment providers felt intentionally opaque.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">One decision I debated</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Coverage versus accuracy. I chose accuracy.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">One feature I didn't build</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Rankings without context mislead more than they help.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">How I decide what 'good enough' means</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                If a user can explain the trade-off back to me, it's good enough.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">What I'm still unsure about</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Where to draw the line between simplicity and completeness.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Path 6: Writing -->
+            <li class="path-item writing-path" data-path="5">
+                <div class="path-header" onclick="togglePath(this)">
+                    <span class="path-title">Writing & Notes</span>
+                    <span class="path-toggle">+</span>
+                </div>
+                <div class="path-content">
+                    <p class="path-opening">
+                        Selected pieces on payments, products, and systems.
+                    </p>
+                    <ul class="writing-list">
+                        <li class="writing-item">
+                            <a href="https://paragraph.com/@ren2ten/the-evolution-of-community-building-a-shift-in-the-wrong-direction?referrer=0x0b3aC4A8672276163182078339053921A5C6A6D0" target="_blank">The evolution of community building</a>
+                            <p class="date">A shift in the wrong direction</p>
+                        </li>
+                        <li class="writing-item">
+                            <a href="https://paragraph.com/@ren2ten/web3-customer-experience-sucks" target="_blank">The Web3 customer support experience sucks</a>
+                            <p class="date">Why it matters and what's broken</p>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+
+        <!-- Hidden section - appears after exploring all paths -->
+        <div class="hidden-section" id="hiddenSection">
+            <p>You explored all the paths. Here's what others say:</p>
+
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p class="testimonial-text">"He single-handedly grew the community and Twitter to 50K+ followers. He became an all-hats, get-things-done operator — contributing to product roadmap discussions, driving partnerships, and keeping a constant pulse on feedback channels."</p>
+                    <p class="testimonial-author">— Josie Leung, Co-Founder, MilkyWay</p>
+                </div>
+
+                <div class="testimonial">
+                    <p class="testimonial-text">"Instrumental in helping grow community and product adoption, contributing to $20M+ in staked assets. Reliable, collaborative, and consistent — one of the strongest contributors I've worked with."</p>
+                    <p class="testimonial-author">— John Etokhana, Founder, rivva</p>
+                </div>
+
+                <div class="testimonial">
+                    <p class="testimonial-text">"He's the kind of team member every leader hopes to have. Quick to adapt, strong ability to learn fast, take initiative, and grow with every challenge."</p>
+                    <p class="testimonial-author">— JayB Kim, Founder & CEO, MilkyWay</p>
+                </div>
+
+                <div class="testimonial">
+                    <p class="testimonial-text">"A swiss army knife in terms of adaptability — taking care of roles that include marketing, strategy and project management. I believe without a shadow of a doubt that he is suitable for almost anything thrown at him."</p>
+                    <p class="testimonial-author">— Joon Whang, MilkyWay</p>
+                </div>
+
+                <div class="testimonial">
+                    <p class="testimonial-text">"Always very open to feedback and great on the management side, with an outstanding ability to juggle wearing different hats and covering for multiple roles at the same time."</p>
+                    <p class="testimonial-author">— Riccardo Montagnin, CTO, MilkyWay</p>
+                </div>
+            </div>
+
+            <p class="hidden-cta-text">Currently exploring product and product-ops roles in payments and fintech.<br>If you'd like to work together or just talk:</p>
+            <div class="cta-group">
+                <a href="resume.pdf" target="_blank" class="btn-primary">Download Resume</a>
+                <a href="https://www.linkedin.com/in/sarthak-64ba12229/" target="_blank" class="btn-secondary">LinkedIn</a>
+                <a href="https://x.com/Fren_pm" target="_blank" class="btn-secondary">X</a>
+            </div>
+        </div>
+
+        <footer class="map-footer">
+            <div class="footer-links">
+                <a href="https://www.linkedin.com/in/sarthak-64ba12229/" target="_blank">LinkedIn</a>
+                <a href="https://x.com/Fren_pm" target="_blank">X</a>
+                <a href="mailto:Sarthakguleria14@gmail.com">Email</a>
+            </div>
+            <button class="reset-btn" onclick="resetMap()">Reset</button>
+        </footer>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // State
+        let visitedPaths = new Set(JSON.parse(localStorage.getItem('sg_visitedPaths') || '[]'));
+        let visitedCheckpoints = new Set(JSON.parse(localStorage.getItem('sg_visitedCheckpoints') || '[]'));
+        const TOTAL_PATHS = 6;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('sg_mapRevealed') === 'true') {
+                document.getElementById('closedState').classList.add('hidden');
+                document.getElementById('mapState').classList.add('visible');
+            }
+
+            // Restore visited states
+            visitedPaths.forEach(pathIndex => {
+                const pathItem = document.querySelector(`[data-path="${pathIndex}"]`);
+                if (pathItem) pathItem.classList.add('visited');
+            });
+
+            visitedCheckpoints.forEach(checkpointId => {
+                const checkpoint = document.querySelector(`[data-checkpoint="${checkpointId}"]`);
+                if (checkpoint) checkpoint.classList.add('visited');
+            });
+
+            updateProgress();
+            checkHiddenSection();
+        });
+
+        function revealMap() {
+            document.getElementById('closedState').classList.add('hidden');
+            document.getElementById('mapState').classList.add('visible');
+            localStorage.setItem('sg_mapRevealed', 'true');
+        }
+
+        function resetMap() {
+            // Clear state
+            visitedPaths.clear();
+            visitedCheckpoints.clear();
+            localStorage.removeItem('sg_visitedPaths');
+            localStorage.removeItem('sg_visitedCheckpoints');
+            localStorage.removeItem('sg_mapRevealed');
+
+            // Reset UI
+            document.querySelectorAll('.visited').forEach(el => el.classList.remove('visited'));
+            document.querySelectorAll('.open').forEach(el => el.classList.remove('open'));
+            document.getElementById('hiddenSection').classList.remove('revealed');
+            document.getElementById('mapState').classList.remove('visible');
+            document.getElementById('closedState').classList.remove('hidden');
+
+            updateProgress();
+            history.replaceState(null, '', window.location.pathname);
+        }
+
+        function togglePath(header) {
+            const pathItem = header.parentElement;
+            const pathIndex = pathItem.dataset.path;
+            const wasOpen = pathItem.classList.contains('open');
+
+            // Close other paths
+            document.querySelectorAll('.path-item.open').forEach(item => {
+                if (item !== pathItem) item.classList.remove('open');
+            });
+
+            pathItem.classList.toggle('open');
+
+            // Mark as visited
+            if (!wasOpen && !visitedPaths.has(pathIndex)) {
+                visitedPaths.add(pathIndex);
+                pathItem.classList.add('visited');
+                localStorage.setItem('sg_visitedPaths', JSON.stringify([...visitedPaths]));
+                updateProgress();
+                checkHiddenSection();
+            }
+
+            // Update URL
+            if (!wasOpen) {
+                const pathName = header.querySelector('.path-title').textContent
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/-+$/, '');
+                history.replaceState(null, '', `#${pathName}`);
+            } else {
+                history.replaceState(null, '', window.location.pathname);
+            }
+        }
+
+        function toggleCheckpoint(header) {
+            const checkpoint = header.parentElement;
+            const pathItem = checkpoint.closest('.path-item');
+            const pathIndex = pathItem.dataset.path;
+            const checkpointIndex = [...checkpoint.parentElement.children].indexOf(checkpoint);
+            const checkpointId = `${pathIndex}-${checkpointIndex}`;
+
+            checkpoint.classList.toggle('open');
+            checkpoint.dataset.checkpoint = checkpointId;
+
+            if (!visitedCheckpoints.has(checkpointId)) {
+                visitedCheckpoints.add(checkpointId);
+                checkpoint.classList.add('visited');
+                localStorage.setItem('sg_visitedCheckpoints', JSON.stringify([...visitedCheckpoints]));
+            }
+        }
+
+        function updateProgress() {
+            const footsteps = document.querySelectorAll('.footstep');
+            footsteps.forEach((footstep, index) => {
+                if (visitedPaths.has(String(index))) {
+                    footstep.classList.add('visited');
+                } else {
+                    footstep.classList.remove('visited');
+                }
+            });
+
+            const count = visitedPaths.size;
+            const progressText = document.getElementById('progressText');
+
+            if (count === 0) {
+                progressText.textContent = 'Choose a path to explore';
+            } else if (count < TOTAL_PATHS) {
+                progressText.textContent = `${count} of ${TOTAL_PATHS} paths explored`;
+            } else {
+                progressText.textContent = 'All paths explored';
+            }
+        }
+
+        function checkHiddenSection() {
+            if (visitedPaths.size >= TOTAL_PATHS) {
+                const hiddenSection = document.getElementById('hiddenSection');
+                if (!hiddenSection.classList.contains('revealed')) {
+                    setTimeout(() => {
+                        hiddenSection.classList.add('revealed');
+                        showToast('You found the hidden section');
+                    }, 300);
+                }
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Handle direct URL with hash
+        window.addEventListener('load', () => {
+            if (window.location.hash) {
+                const hash = window.location.hash.slice(1);
+                const pathTitles = document.querySelectorAll('.path-title');
+                pathTitles.forEach(title => {
+                    const titleSlug = title.textContent
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/-+$/, '');
+                    if (titleSlug === hash) {
+                        if (!document.getElementById('mapState').classList.contains('visible')) {
+                            revealMap();
+                        }
+                        setTimeout(() => {
+                            title.parentElement.click();
+                        }, 400);
+                    }
+                });
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('mapState').classList.contains('visible')) {
+                if (e.key === 'Enter') revealMap();
+                return;
+            }
+
+            const paths = [...document.querySelectorAll('.path-item')];
+            const openPath = paths.find(p => p.classList.contains('open'));
+            const currentIndex = openPath ? paths.indexOf(openPath) : -1;
+
+            if (e.key === 'ArrowDown' || e.key === 'j') {
+                e.preventDefault();
+                const nextIndex = currentIndex < paths.length - 1 ? currentIndex + 1 : 0;
+                paths[nextIndex].querySelector('.path-header').click();
+            } else if (e.key === 'ArrowUp' || e.key === 'k') {
+                e.preventDefault();
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : paths.length - 1;
+                paths[prevIndex].querySelector('.path-header').click();
+            } else if (e.key === 'Escape') {
+                if (openPath) {
+                    openPath.classList.remove('open');
+                    history.replaceState(null, '', window.location.pathname);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
