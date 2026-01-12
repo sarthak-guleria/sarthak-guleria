@@ -207,7 +207,7 @@
         }
 
         .path-item.open .path-content {
-            max-height: 1200px;
+            max-height: 3000px;
             opacity: 1;
             padding-bottom: 28px;
         }
@@ -271,7 +271,7 @@
         }
 
         .checkpoint.open .checkpoint-content {
-            max-height: 200px;
+            max-height: 2000px;
             opacity: 1;
             padding: 4px 0 16px 22px;
         }
@@ -806,24 +806,56 @@
                 </div>
             </li>
 
-            <!-- Path 6: Writing -->
-            <li class="path-item writing-path" data-path="5">
+            <!-- Path 6: STAR Case Study -->
+            <li class="path-item" data-path="5">
                 <div class="path-header" onclick="togglePath(this)">
-                    <span class="path-title">Writing & Notes</span>
+                    <span class="path-title">STAR: Building Signal from Noise</span>
                     <span class="path-toggle">+</span>
                 </div>
                 <div class="path-content">
                     <p class="path-opening">
-                        Selected pieces on payments, products, and systems.
+                        A case study in increasing DeFi participation without notification spam.<br>
+                        Most protocols solve low participation by pushing more alerts. We built a dashboard that let users pull what they needed instead.
                     </p>
-                    <ul class="writing-list">
-                        <li class="writing-item">
-                            <a href="https://paragraph.com/@ren2ten/the-evolution-of-community-building-a-shift-in-the-wrong-direction?referrer=0x0b3aC4A8672276163182078339053921A5C6A6D0" target="_blank">The evolution of community building</a>
-                            <p class="date">A shift in the wrong direction</p>
+                    <ul class="checkpoints">
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Situation</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                MilkyWay had incentives across multiple protocols: LP positions on Thena and Pancakeswap, lending on Echelon, staking opportunities with variable APRs. Users kept asking "where should I put my tokens?" but we couldn't answer without spamming them with every new pool. The real challenge: keeping 390k+ wallet holders informed about opportunities without training them to ignore our messages.
+                            </div>
                         </li>
-                        <li class="writing-item">
-                            <a href="https://paragraph.com/@ren2ten/web3-customer-experience-sucks" target="_blank">The Web3 customer support experience sucks</a>
-                            <p class="date">Why it matters and what's broken</p>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Task</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Increase participation in milkLST and MILK DeFi positions across partner protocols while maintaining trust and reducing support volume. Success meant users discovering opportunities themselves rather than waiting for announcements.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Action</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Built a live DeFi dashboard aggregating TVL, APR, reward tokens, and platforms in one view.<br><br>
+                                <img src="Defitab.webp" alt="DeFi Dashboard showing liquidity opportunities" style="width: 100%; border-radius: 6px; margin: 12px 0;"><br>
+                                Key decisions: Showed real-time APRs instead of estimated ranges. Highlighted new opportunities without hiding established ones. Let users filter by risk preference. Created step-by-step guides for each strategy type.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">Result</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Featured pools saw measurably higher participation. Support tickets asking "where should I stake?" dropped noticeably. Users started deploying across multiple protocols instead of clustering in one. The dashboard became our go-to answer for "I have MILK, now what?"<br><br>
+                                <strong>What this taught me:</strong> Push notifications create urgency. Dashboards create autonomy. For long-term products, autonomy compounds better than urgency.
+                            </div>
                         </li>
                     </ul>
                 </div>
