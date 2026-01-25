@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarthak Guleria - Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Georgia, serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 60px;
+            background: white;
+        }
+
+        /* Header - Centered */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .name {
+            font-size: 22pt;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 2px;
+        }
+
+        .tagline {
+            font-size: 10.5pt;
+            color: #555;
+            margin-bottom: 3px;
+        }
+
+        .contact-info {
+            font-size: 10pt;
+            color: #333;
+        }
+
+        .contact-info a {
+            color: #2c5282;
+            text-decoration: underline;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2c5282;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #2c5282;
+        }
+
+        /* Professional Summary */
+        .summary {
+            text-align: justify;
+            margin-bottom: 0;
+        }
+
+        /* Experience */
+        .job {
+            margin-bottom: 8px;
+        }
+
+        .job-header {
+            margin-bottom: 1px;
+        }
+
+        .company {
+            font-weight: bold;
+            color: #2c5282;
+        }
+
+        .location {
+            color: #333;
+            font-weight: normal;
+        }
+
+        .job-title-row {
+            margin-bottom: 2px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .dates {
+            color: #333;
+            font-style: italic;
+        }
+
+        .promotion-note {
+            font-style: italic;
+            color: #555;
+            font-size: 10pt;
+            margin-bottom: 3px;
+        }
+
+        ul {
+            margin-left: 18px;
+            margin-bottom: 2px;
+        }
+
+        li {
+            margin-bottom: 2px;
+            text-align: justify;
+        }
+
+        /* Projects */
+        .project-header {
+            margin-bottom: 1px;
+        }
+
+        .project-link {
+            color: #2c5282;
+            text-decoration: underline;
+        }
+
+        /* Skills - Paragraph style */
+        .skills-text {
+            text-align: justify;
+        }
+
+        .skill-category {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Education */
+        .education-text {
+            margin-top: 2px;
+        }
+
+        .degree {
+            font-weight: bold;
+        }
+
+        /* Download bar */
+        .download-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #1a365d;
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .download-bar span {
+            color: white;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+
+        .download-bar a {
+            background: white;
+            color: #1a365d;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .download-bar a:hover {
+            background: #e2e8f0;
+        }
+
+        .content-wrapper {
+            padding-top: 50px;
+        }
+
+        /* Print styles */
+        @media print {
+            .download-bar {
+                display: none !important;
+            }
+
+            .content-wrapper {
+                padding-top: 0;
+            }
+
+            body {
+                padding: 0.3in 0.4in;
+            }
+
+            a {
+                color: #2c5282 !important;
+            }
+        }
+
+        @page {
+            margin: 0.3in;
+        }
+    </style>
+</head>
+<body>
+    <!-- Download Bar -->
+    <div class="download-bar">
+        <span>Sarthak Guleria — Resume</span>
+        <a href="resume.pdf" download>Download PDF</a>
+    </div>
+
+    <div class="content-wrapper">
+    <!-- Header -->
+    <div class="header">
+        <div class="name">SARTHAK GULERIA</div>
+        <div class="tagline">Payments & Product-leaning Generalist</div>
+        <div class="contact-info">
+            <a href="mailto:Sarthakguleria14@gmail.com">Sarthakguleria14@gmail.com</a> |
+            <a href="https://www.linkedin.com/in/sarthak-64ba12229/">LinkedIn</a> |
+            <a href="https://x.com/Fren_pm">X</a> |
+            <a href="https://sarthak-guleria.github.io/sarthak-guleria/">Not Resume</a>
+        </div>
+    </div>
+
+    <!-- Professional Summary -->
+    <div class="section-header">Professional Summary</div>
+    <p class="summary">
+        Product generalist with 4+ years in web3 and fintech. Built incentive systems that pulled in $250M+ TVL and 390k wallets. Shipped points programs, ran GTM for testnets, handled user feedback, and worked across product, growth, and ops. Looking for product or product ops roles in payments and fintech.
+    </p>
+
+    <!-- Experience -->
+    <div class="section-header">Experience</div>
+
+    <div class="job">
+        <div class="job-header">
+            <span class="company">MilkyWay Zone</span> <span class="location">Remote</span>
+        </div>
+        <div class="job-title-row">
+            <span class="job-title">Product Manager – Core Contributor</span> <span class="dates">May 2025 – Present</span>
+        </div>
+        <div class="promotion-note">(Joined as founding contributor before full-time role; promoted based on impact)</div>
+        <ul>
+            <li>Designed the MilkyWay Points Program from scratch – now at 390k+ connected wallets and $250M+ in staked assets.</li>
+            <li>Own product direction for core staking features. Work with CTO and founders on roadmap, prioritization, and sprint planning.</li>
+            <li>Built cross-team workflow using JIRA sprints and weekly syncs across 12+ people (dev, marketing, ops). Coordinated 4 major launches including TGE and airdrops with real-time stakeholder updates.</li>
+            <li>Shipped Multiplier NFTs during TGE delays to keep users engaged and reward long-term holders.</li>
+        </ul>
+
+        <div class="job-title-row" style="margin-top: 6px;">
+            <span class="job-title">Growth & Marketing Contributor</span> <span class="dates">Feb 2024 – May 2025</span>
+        </div>
+        <ul>
+            <li>Ran GTM for Initia Testnet launch. Hit 100k new users and 300k wallet interactions in Q1.</li>
+            <li>Grew Twitter from 0 to 70k followers in 8 months. Built content calendar tied to product releases.</li>
+            <li>Managed ambassador program (~25 people) across APAC, EU, and NA regions.</li>
+            <li>Set up feedback loops between Discord and dev team – helped shape UI/UX changes for mainnet launch.</li>
+        </ul>
+    </div>
+
+    <div class="job">
+        <div class="job-header">
+            <span class="company">Composable Finance</span> <span class="location">Remote</span>
+        </div>
+        <div class="job-title-row">
+            <span class="job-title">Product Marketing Manager</span> <span class="dates">Dec 2021 – Feb 2024</span>
+        </div>
+        <ul>
+            <li>Ran a 45k+ member community. Was the main link between users and the eng team for Mosaic and Mural products.</li>
+            <li>Built and managed support ticketing system. Closed 1,500+ tickets over 2 years, flagged 30+ recurring bugs to eng.</li>
+            <li>Launched the Ambassador Program – recruited regional leads for governance rollout.</li>
+            <li>Wrote product docs, release notes, and governance proposals. Published 40+ updates over 2 years.</li>
+        </ul>
+    </div>
+
+    <div class="job">
+        <div class="job-header">
+            <span class="company">Advanced Blockchain AG</span> <span class="location">Remote</span>
+        </div>
+        <div class="job-title-row">
+            <span class="job-title">Product Marketing Manager</span> <span class="dates">Dec 2021 – Apr 2022</span>
+        </div>
+        <ul>
+            <li>Set up community channels from scratch – Telegram, Discord, and Twitter during launch phase.</li>
+            <li>Handled product announcements and governance comms during a volatile market period.</li>
+            <li>Coordinated with internal product teams to gather requirements and shape launch messaging.</li>
+        </ul>
+    </div>
+
+    <!-- Projects -->
+    <div class="section-header">Projects</div>
+    <div class="job">
+        <div class="project-header">
+            <span class="company">PayCabal</span> <a href="https://paycabal.xyz" class="project-link">paycabal.xyz</a>
+        </div>
+        <ul>
+            <li>Built an independent comparison tool for crypto payment cards, neobanks, and on/off ramps. No signup required, side-by-side comparison of fees, rewards, and supported regions.</li>
+            <li>Created because existing payment product info was scattered and intentionally opaque. Focused on accuracy over coverage.</li>
+        </ul>
+    </div>
+
+    <!-- Skills -->
+    <div class="section-header">Skills</div>
+    <p class="skills-text">
+        <span class="skill-category">Product:</span> PRD writing, Roadmapping, Backlog grooming, Incentive design, GTM coordination, User feedback systems
+        <span class="skill-category">Domain:</span> DeFi, Staking/restaking, Cross-chain, Tokenomics, Governance, Payments
+        <span class="skill-category">Tools:</span> Jira, Linear, Notion, Dune Analytics, Google Analytics, Slack, Figma
+    </p>
+
+    <!-- Education -->
+    <div class="section-header">Education</div>
+    <p class="education-text">
+        <span class="degree">M.Com</span>, IGNOU (2025) | <span class="degree">B.Com</span>, Delhi University (2022)
+    </p>
+    </div>
+</body>
+</html>

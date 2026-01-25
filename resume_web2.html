@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarthak Guleria - Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', 'Segoe UI', Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.5in 0.6in;
+            background: white;
+        }
+
+        /* Header */
+        .header {
+            text-align: left;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2c5282;
+        }
+
+        .name {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #1a365d;
+            margin-bottom: 2px;
+        }
+
+        .tagline {
+            font-size: 11pt;
+            color: #4a5568;
+            margin-bottom: 4px;
+        }
+
+        .contact-info {
+            font-size: 10pt;
+            color: #4a5568;
+        }
+
+        .contact-info a {
+            color: #2c5282;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2c5282;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #2c5282;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Professional Summary */
+        .summary {
+            margin-bottom: 4px;
+            text-align: justify;
+        }
+
+        /* Experience */
+        .job {
+            margin-bottom: 12px;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
+
+        .company {
+            font-weight: bold;
+            color: #2c5282;
+        }
+
+        .location {
+            color: #4a5568;
+            font-style: normal;
+        }
+
+        .job-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .dates {
+            color: #4a5568;
+            font-style: italic;
+        }
+
+        .promotion-note {
+            font-style: italic;
+            color: #666;
+            font-size: 10pt;
+            margin-bottom: 4px;
+        }
+
+        ul {
+            margin-left: 18px;
+            margin-bottom: 4px;
+        }
+
+        li {
+            margin-bottom: 3px;
+            text-align: justify;
+        }
+
+        /* Skills */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2px 12px;
+        }
+
+        .skill-category {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .skill-items {
+            color: #4a5568;
+        }
+
+        /* Education */
+        .education-item {
+            margin-bottom: 4px;
+        }
+
+        .degree {
+            font-weight: bold;
+        }
+
+        .university {
+            font-style: italic;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                padding: 0;
+                font-size: 10.5pt;
+            }
+
+            .header {
+                margin-bottom: 10px;
+            }
+
+            .section-header {
+                margin-top: 12px;
+            }
+
+            a {
+                color: #2c5282 !important;
+                text-decoration: none !important;
+            }
+        }
+
+        @page {
+            margin: 0.5in;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="name">SARTHAK GULERIA</div>
+        <div class="tagline">Payments & Product-leaning Generalist</div>
+        <div class="contact-info">
+            <a href="mailto:Sarthakguleria14@gmail.com">Sarthakguleria14@gmail.com</a> |
+            <a href="https://www.linkedin.com/in/sarthak-64ba12229/">LinkedIn</a> |
+            <a href="https://x.com/Fren_pm">X</a> |
+            <a href="https://sarthak-guleria.github.io/sarthak-guleria/">Not Resume</a>
+        </div>
+    </div>
+
+    <!-- Professional Summary -->
+    <div class="section-header">Professional Summary</div>
+    <p class="summary">
+        Product generalist with 4+ years in fintech startups. Built rewards programs that drove $250M+ in deposits and 390k users. Shipped loyalty systems, ran GTM for product launches, managed user feedback pipelines, and worked across product, growth, and ops. Looking for product, growth, or ops roles in payments and fintech.
+    </p>
+
+    <!-- Experience -->
+    <div class="section-header">Experience</div>
+
+    <div class="job">
+        <div class="job-header">
+            <span class="company">MilkyWay</span>
+            <span class="location">Remote (Fintech Startup)</span>
+        </div>
+        <div class="job-title-row">
+            <span class="job-title">Product Manager</span>
+            <span class="dates">May 2025 – Present</span>
+        </div>
+        <div class="promotion-note">(Joined as founding team member; promoted based on impact)</div>
+        <ul>
+            <li>Designed and owned the Points Program from scratch – grew to 390k+ users and $250M+ in deposits.</li>
+            <li>Own product direction for core financial products. Work with CTO and founders on roadmap, prioritization, and sprint planning.</li>
+            <li>Built cross-team workflow using JIRA sprints and weekly syncs across 12+ people (dev, marketing, ops). Coordinated 4 major product launches with real-time stakeholder updates.</li>
+            <li>Shipped loyalty rewards feature during launch delays to retain users and reward long-term customers.</li>
+        </ul>
+
+        <div class="job-title-row">
+            <span class="job-title">Growth & Marketing Lead</span>
+            <span class="dates">Feb 2024 – May 2025</span>
+        </div>
+        <ul>
+            <li>Ran GTM for beta launch. Hit 100k new users and 300k transactions in Q1.</li>
+            <li>Grew Twitter from 0 to 70k followers in 8 months. Built content calendar tied to product releases.</li>
+            <li>Managed ambassador program (~25 people) across APAC, EU, and NA regions.</li>
+            <li>Set up user feedback loops between community and dev team – helped shape UI/UX changes for platform launch.</li>
+        </ul>
+    </div>
+
+    <div class="job">
+        <div class="job-header">
+            <span class="company">Composable Finance</span>
+            <span class="location">Remote (Fintech Startup)</span>
+        </div>
+        <div class="job-title-row">
+            <span class="job-title">Product Marketing Manager</span>
+            <span class="dates">Dec 2021 – Feb 2024</span>
+        </div>
+        <ul>
+            <li>Ran a 45k+ member user community. Primary liaison between users and engineering for two core products.</li>
+            <li>Built and managed support ticketing system. Closed 1,500+ tickets over 2 years, flagged 30+ recurring bugs to eng.</li>
+            <li>Launched the Ambassador Program – recruited regional leads across multiple countries.</li>
+            <li>Wrote product docs, release notes, and feature announcements. Published 40+ updates over 2 years.</li>
+        </ul>
+    </div>
+
+    <div class="job">
+        <div class="job-header">
+            <span class="company">Advanced Blockchain AG</span>
+            <span class="location">Remote (Venture Studio)</span>
+        </div>
+        <div class="job-title-row">
+            <span class="job-title">Product Marketing Manager</span>
+            <span class="dates">Dec 2021 – Apr 2022</span>
+        </div>
+        <ul>
+            <li>Set up community channels from scratch – Slack, Discord, and Twitter during launch phase.</li>
+            <li>Handled product announcements and company communications during a high-growth period.</li>
+            <li>Coordinated with internal product teams to gather requirements and shape launch messaging.</li>
+        </ul>
+    </div>
+
+    <!-- Projects -->
+    <div class="section-header">Projects</div>
+    <div class="job">
+        <div class="job-header">
+            <span class="company">PayCabal</span>
+            <span class="location"><a href="https://paycabal.xyz" style="color: #2c5282;">paycabal.xyz</a></span>
+        </div>
+        <div class="job-title-row">
+            <span class="job-title">Founder</span>
+            <span class="dates">2025</span>
+        </div>
+        <ul>
+            <li>Built an independent comparison tool for payment cards and neobanks. No signup required, side-by-side comparison of fees, rewards, and supported regions.</li>
+            <li>Created because existing payment product info was scattered and hard to compare. Focused on accuracy over coverage.</li>
+        </ul>
+    </div>
+
+    <!-- Skills -->
+    <div class="section-header">Skills</div>
+    <div class="skills-grid">
+        <span class="skill-category">Product:</span>
+        <span class="skill-items">PRD writing, Roadmapping, Backlog grooming, User feedback systems, A/B testing basics, GTM coordination</span>
+
+        <span class="skill-category">Growth & Marketing:</span>
+        <span class="skill-items">Rewards/loyalty programs, Ambassador programs, Content strategy, Community management, Social media growth</span>
+
+        <span class="skill-category">Tools:</span>
+        <span class="skill-items">Jira, Linear, Notion, Google Analytics, Google Sheets, Slack, ClickUp, Figma</span>
+
+        <span class="skill-category">Domain:</span>
+        <span class="skill-items">Payments, Fintech, Financial products, B2C platforms</span>
+    </div>
+
+    <!-- Education -->
+    <div class="section-header">Education</div>
+    <div class="education-item">
+        <span class="degree">Master of Commerce (M.Com)</span> — <span class="university">Indira Gandhi National Open University</span>, 2025
+    </div>
+    <div class="education-item">
+        <span class="degree">Bachelor of Commerce (B.Com)</span> — <span class="university">Delhi University</span>, 2022
+    </div>
+</body>
+</html>
