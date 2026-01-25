@@ -3,6 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sarthak Guleria - Product & Payments. 4+ years in fintech, built incentive systems driving $250M+ in deposits. Exploring product roles in payments and fintech.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Sarthak Guleria - Product & Payments">
+    <meta property="og:description" content="A map of decisions, systems, and trade-offs. 4+ years in fintech, built incentive systems driving $250M+ in deposits.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sarthak-guleria.github.io/sarthak-guleria/">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Sarthak Guleria - Product & Payments">
+    <meta name="twitter:description" content="A map of decisions, systems, and trade-offs. 4+ years in fintech, built incentive systems driving $250M+ in deposits.">
+    <meta name="twitter:creator" content="@Fren_pm">
+
     <title>Sarthak Guleria</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23faf8f5' width='100' height='100' rx='12'/><text x='50' y='72' font-family='Brush Script MT, cursive' font-size='58' font-style='italic' fill='%231a1a1a' text-anchor='middle'>S</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -555,7 +569,7 @@
                                 <span class="checkpoint-title">A system that worked (temporarily)</span>
                             </div>
                             <div class="checkpoint-content">
-                                The MilkyWay points program drove participation quickly — contributing to $20M+ in staked assets. But the real work started once patterns emerged and abuse vectors became visible.
+                                MilkyWay is a liquid staking protocol. The points program drove participation quickly — contributing to $250M+ in staked assets. But the real work started once patterns emerged and abuse vectors became visible.
                             </div>
                         </li>
                         <li class="checkpoint">
@@ -599,7 +613,7 @@
                     <p class="path-opening">
                         Growth is rarely blocked by distribution.<br>
                         It's blocked by friction nobody wants to own.<br>
-                        At MilkyWay, I grew the community from zero to 50K+ followers.
+                        At MilkyWay, I grew the community from zero to 70K+ followers.
                     </p>
                     <ul class="checkpoints">
                         <li class="checkpoint">
@@ -843,7 +857,7 @@
                             </div>
                             <div class="checkpoint-content">
                                 Built a live DeFi dashboard aggregating TVL, APR, reward tokens, and platforms in one view.<br><br>
-                                <img src="Defitab.webp" alt="DeFi Dashboard showing liquidity opportunities" style="width: 100%; border-radius: 6px; margin: 12px 0;"><br>
+                                <img src="Defitab.webp" alt="DeFi Dashboard showing liquidity opportunities" width="983" height="722" style="width: 100%; height: auto; border-radius: 6px; margin: 12px 0;"><br>
                                 Key decisions: Showed real-time APRs instead of estimated ranges. Highlighted new opportunities without hiding established ones. Let users filter by risk preference. Created step-by-step guides for each strategy type.
                             </div>
                         </li>
@@ -868,12 +882,12 @@
 
             <div class="testimonials">
                 <div class="testimonial">
-                    <p class="testimonial-text">"He single-handedly grew the community and Twitter to 50K+ followers. He became an all-hats, get-things-done operator — contributing to product roadmap discussions, driving partnerships, and keeping a constant pulse on feedback channels."</p>
+                    <p class="testimonial-text">"He single-handedly grew the community and Twitter to 70K+ followers. He became an all-hats, get-things-done operator — contributing to product roadmap discussions, driving partnerships, and keeping a constant pulse on feedback channels."</p>
                     <p class="testimonial-author">— Josie Leung, Co-Founder, MilkyWay</p>
                 </div>
 
                 <div class="testimonial">
-                    <p class="testimonial-text">"Instrumental in helping grow community and product adoption, contributing to $20M+ in staked assets. Reliable, collaborative, and consistent — one of the strongest contributors I've worked with."</p>
+                    <p class="testimonial-text">"Instrumental in helping grow community and product adoption, contributing to $250M+ in staked assets. Reliable, collaborative, and consistent — one of the strongest contributors I've worked with."</p>
                     <p class="testimonial-author">— John Etokhana, Founder, rivva</p>
                 </div>
 
@@ -920,6 +934,7 @@
         let visitedPaths = new Set(JSON.parse(localStorage.getItem('sg_visitedPaths') || '[]'));
         let visitedCheckpoints = new Set(JSON.parse(localStorage.getItem('sg_visitedCheckpoints') || '[]'));
         const TOTAL_PATHS = 6;
+        const PATHS_TO_REVEAL = 3;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -1041,7 +1056,7 @@
         }
 
         function checkHiddenSection() {
-            if (visitedPaths.size >= TOTAL_PATHS) {
+            if (visitedPaths.size >= PATHS_TO_REVEAL) {
                 const hiddenSection = document.getElementById('hiddenSection');
                 if (!hiddenSection.classList.contains('revealed')) {
                     setTimeout(() => {
