@@ -546,6 +546,7 @@
             <span class="footstep" data-path="3"></span>
             <span class="footstep" data-path="4"></span>
             <span class="footstep" data-path="5"></span>
+            <span class="footstep" data-path="6"></span>
         </div>
 
         <p class="progress-text" id="progressText"></p>
@@ -874,6 +875,69 @@
                     </ul>
                 </div>
             </li>
+            <!-- Path 7: TRACE Case Study -->
+            <li class="path-item" data-path="6">
+                <div class="path-header" onclick="togglePath(this)">
+                    <span class="path-title">TRACE: Building a Coordination Layer</span>
+                    <span class="path-toggle">+</span>
+                </div>
+                <div class="path-content">
+                    <p class="path-opening">
+                        A case study in making cross-functional work visible without slowing anyone down.<br>
+                        Fifteen people. Three departments. Everyone shipping. The problem wasn't effort — it was that nobody had a shared view of what was happening across the team.
+                    </p>
+                    <ul class="checkpoints">
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">T — Tasks</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Fifteen people. Three departments. Everyone shipping. The problem wasn't effort — it was that nobody had a shared view of what was happening across the team. Not because they didn't care. Because when you're moving fast, coordination feels like overhead until it suddenly isn't.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">R — Review</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                The gaps were predictable in hindsight. Blockers had no clear owner. Deadlines slipped quietly instead of visibly. Tasks that touched multiple teams were the most at risk. The fix needed to work without asking everyone to change how they worked.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">A — Architecture</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Built a three-layer system. Task breakdown across Marketing, Engineering, and Growth. A Jira hierarchy with consistent naming so everything traced back to a parent. A Master Track Sheet on top — plain language, no Jira expertise required.<br><br>
+                                <img src="workflow.png" alt="Coordination workflow diagram showing the three-layer task management system" style="width: 100%; height: auto; border-radius: 6px; margin: 12px 0;"><br>
+                                The part I spent the most time on was the escalation flow for blockers. Most coordination systems ignore this and then wonder why blockers stall quietly for weeks.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">C — Coordination</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Onboarded team leads, not every individual. Two weeks to adoption. At peak the system was tracking 50+ tasks across all departments.
+                            </div>
+                        </li>
+                        <li class="checkpoint">
+                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
+                                <span class="checkpoint-marker">+</span>
+                                <span class="checkpoint-title">E — Execution</span>
+                            </div>
+                            <div class="checkpoint-content">
+                                Deadlines became more reliable. More importantly, timeline estimates got more honest — because dependencies were visible before commitments were made, not after.<br><br>
+                                <strong>What this taught me:</strong> The best coordination system is the one the team actually uses. That usually means designing for the least Jira-fluent person on the team, not the most.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
         </ul>
 
         <!-- Hidden section - appears after exploring all paths -->
@@ -933,7 +997,7 @@
         // State
         let visitedPaths = new Set(JSON.parse(localStorage.getItem('sg_visitedPaths') || '[]'));
         let visitedCheckpoints = new Set(JSON.parse(localStorage.getItem('sg_visitedCheckpoints') || '[]'));
-        const TOTAL_PATHS = 6;
+        const TOTAL_PATHS = 7;
         const PATHS_TO_REVEAL = 3;
 
         // Initialize
