@@ -547,6 +547,7 @@
             <span class="footstep" data-path="4"></span>
             <span class="footstep" data-path="5"></span>
             <span class="footstep" data-path="6"></span>
+            <span class="footstep" data-path="7"></span>
         </div>
 
         <p class="progress-text" id="progressText"></p>
@@ -938,6 +939,24 @@
                     </ul>
                 </div>
             </li>
+            <!-- Path 8: Writing -->
+            <li class="path-item writing-path" data-path="7">
+                <div class="path-header" onclick="togglePath(this)">
+                    <span class="path-title">Writing</span>
+                    <span class="path-toggle">+</span>
+                </div>
+                <div class="path-content">
+                    <p class="path-opening">
+                        Things I've built, learned, or figured out the hard way.
+                    </p>
+                    <ul class="writing-list">
+                        <li class="writing-item">
+                            <a href="writing/aave-loop-guide.html" target="_blank">A Practical Guide to Yield Looping on Aave on Mantle</a>
+                            <div class="date">Feb 2026 · DeFi · 8 min read</div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
         </ul>
 
         <!-- Hidden section - appears after exploring all paths -->
@@ -985,6 +1004,7 @@
                 <a href="https://x.com/Fren_pm" target="_blank">X</a>
                 <a href="mailto:Sarthakguleria14@gmail.com">Email</a>
                 <a href="resume_updated.html" target="_blank">Resume</a>
+                <a href="writing.html">Writing</a>
             </div>
             <button class="reset-btn" onclick="resetMap()">Reset</button>
         </footer>
@@ -997,7 +1017,7 @@
         // State
         let visitedPaths = new Set(JSON.parse(localStorage.getItem('sg_visitedPaths') || '[]'));
         let visitedCheckpoints = new Set(JSON.parse(localStorage.getItem('sg_visitedCheckpoints') || '[]'));
-        const TOTAL_PATHS = 7;
+        const TOTAL_PATHS = 8;
         const PATHS_TO_REVEAL = 3;
 
         // Initialize

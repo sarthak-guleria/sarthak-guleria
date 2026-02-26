@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Practical Guide to Yield Looping on Aave on Mantle — Sarthak Guleria</title>
+  <meta name="description" content="How to put idle capital to work using sUSDe, GHO, and Aave E-Mode — step by step, with risk analysis and a free modelling tool." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23faf8f5' width='100' height='100' rx='12'/><text x='50' y='72' font-family='Brush Script MT, cursive' font-size='58' font-style='italic' fill='%231a1a1a' text-anchor='middle'>S</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf8f5;
+      --bg-subtle: #f5f2ed;
+      --ink: #1a1a1a;
+      --ink-light: #4a4a4a;
+      --ink-faded: #888;
+      --accent: #2c5530;
+      --accent-light: #e8f0e8;
+      --border: #e5e2dd;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      line-height: 1.75;
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    nav {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink-faded);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+
+    nav a:hover { color: var(--ink); }
+    nav .home { color: var(--ink); font-weight: 500; }
+    nav .nav-links { display: flex; gap: 20px; align-items: center; }
+
+    /* Article container */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 72px 32px 120px;
+    }
+
+    /* Article header */
+    .article-header {
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .article-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .article-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime::before {
+      content: '·';
+      margin-right: 12px;
+      color: var(--border);
+    }
+
+    h1.article-title {
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .article-subtitle {
+      font-size: 18px;
+      color: var(--ink-faded);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* Article body */
+    .article-body > * + * {
+      margin-top: 28px;
+    }
+
+    .article-body h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      margin-top: 52px;
+      margin-bottom: -12px;
+    }
+
+    .article-body p {
+      color: var(--ink-light);
+    }
+
+    .article-body strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* Callout / intro block */
+    .callout {
+      background: var(--bg-subtle);
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .callout p {
+      font-size: 16px;
+      color: var(--ink-light);
+      margin: 0;
+    }
+
+    .callout p + p {
+      margin-top: 12px;
+    }
+
+    /* Steps list */
+    .steps-list {
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .steps-list li {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      counter-increment: steps;
+    }
+
+    .steps-list li:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .step-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+      font-size: 16px;
+      color: var(--ink-light);
+      line-height: 1.65;
+    }
+
+    /* Stat row */
+    .stat-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+    }
+
+    /* Figures / screenshots */
+    figure {
+      margin: 36px 0;
+    }
+
+    figure img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      display: block;
+    }
+
+    figcaption {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* Risk grid */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .risk-item {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+
+    .risk-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .risk-item-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .risk-badge {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .risk-item-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      line-height: 1.5;
+    }
+
+    /* Key takeaways */
+    .takeaways {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 32px;
+    }
+
+    .takeaways h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 16px;
+    }
+
+    .takeaways ul {
+      list-style: none;
+    }
+
+    .takeaways li {
+      font-size: 16px;
+      color: var(--ink-light);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .takeaways li:last-child { border-bottom: none; }
+
+    .takeaways li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    /* Tool CTA */
+    .tool-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .tool-btn-primary {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 24px;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .tool-btn-primary:hover { background: var(--ink-light); }
+
+    .tool-btn-secondary {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 20px;
+      background: transparent;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .tool-btn-secondary:hover { border-color: var(--ink); }
+
+    /* End CTA */
+    .end-cta {
+      margin-top: 56px;
+      padding: 36px 40px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .end-cta p {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--ink-faded);
+      margin-bottom: 20px;
+    }
+
+    .end-cta a.cta-main {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 28px;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .end-cta a.cta-main:hover { background: var(--ink-light); }
+
+    /* Disclaimer */
+    .disclaimer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      line-height: 1.6;
+    }
+
+    /* Back / footer */
+    .article-footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
+    .back-link {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: var(--ink); }
+
+    .share-links { display: flex; gap: 16px; }
+    .share-links a {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .share-links a:hover { color: var(--ink); }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .container { padding: 48px 20px 80px; }
+      nav { padding: 20px; }
+      h1.article-title { font-size: 26px; }
+      .stat-row { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .risk-grid { grid-template-columns: 1fr; }
+      .article-footer { flex-direction: column; gap: 16px; }
+      .tool-cta { flex-direction: column; }
+      .end-cta { padding: 28px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="home">Sarthak Guleria</a>
+    <div class="nav-links">
+      <a href="../writing.html">← Writing</a>
+      <a href="../index.html">Home</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="article-tag">DeFi</span>
+        <span class="article-date">February 2026</span>
+        <span class="article-readtime">8 min read</span>
+      </div>
+      <h1 class="article-title">A Practical Guide to Yield Looping on Aave on Mantle</h1>
+      <p class="article-subtitle">How to put idle capital to work using sUSDe, GHO, and Aave E-Mode — step by step, with risk analysis and a free modelling tool.</p>
+    </header>
+
+    <!-- Body -->
+    <div class="article-body">
+
+      <!-- Intro -->
+      <div class="callout">
+        <p>This is a guide for putting stablecoin capital to work more efficiently — not a yield farming play. The strategy uses one chain, known assets, and a clear exit. The risk is real but bounded. Understand it before entering.</p>
+      </div>
+
+      <h2>What yield looping is</h2>
+
+      <p>Looping is a DeFi strategy that amplifies yield by cycling capital through a lending protocol. You supply an asset, borrow against it at a lower rate, and re-supply the borrowed funds. Each cycle compounds the spread between your supply rate and your borrow cost.</p>
+
+      <p>Done on a single chain with predictable spreads, it's a controlled way to increase yield without taking on directional exposure. Done carelessly, it compresses your liquidation buffer until a small price move triggers a wipe.</p>
+
+      <p>This guide covers a specific implementation with a clean exit: looping <strong>sUSDe on Aave (Mantle network)</strong> using E-Mode, then converting the final borrow into <strong>GHO</strong> — which earns yield separately at 7.03%.</p>
+
+      <!-- Stats -->
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-value">3.5%</div>
+          <div class="stat-label">sUSDe native APY</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">2.5%</div>
+          <div class="stat-label">USDC borrow cost</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">7.03%</div>
+          <div class="stat-label">GHO supply APY</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">~1%</div>
+          <div class="stat-label">net spread per loop</div>
+        </div>
+      </div>
+
+      <h2>The setup</h2>
+
+      <p>Three components:</p>
+
+      <p><strong>sUSDe</strong> — Ethena's yield-bearing stablecoin, earning ~3.5% natively on Aave on Mantle. Historically above 5% annually. The collateral for the entire position.</p>
+
+      <p><strong>E-Mode</strong> — Aave's efficiency mode for correlated asset pairs, allowing up to 90% max LTV. This is what makes the math work — a higher LTV means more capital can be deployed per loop.</p>
+
+      <p><strong>GHO</strong> — Aave's native stablecoin, used as the exit on the final loop. Supplies at 7.03% and earns yield independently from the rest of the position.</p>
+
+      <h2>How to execute it</h2>
+
+      <p>The full loop, step by step:</p>
+
+      <figure>
+        <img src="images/walkthrough.png" alt="Visual walkthrough: supply sUSDe → borrow USDC → swap and re-supply → exit to GHO, ending with two simultaneous yield sources" />
+        <figcaption>Four steps, two yield sources running at the end</figcaption>
+      </figure>
+
+      <ol class="steps-list">
+        <li>
+          <span class="step-number">1</span>
+          <div class="step-content"><strong>Get sUSDe.</strong> Convert your capital using Bungee or any preferred aggregator, then supply on Aave on Mantle. You're earning 3.5% from this point forward.</div>
+        </li>
+        <li>
+          <span class="step-number">2</span>
+          <div class="step-content"><strong>Borrow USDC via E-Mode.</strong> E-Mode allows up to 90% max LTV. Use 80% to maintain a 10% safety buffer against liquidation.</div>
+        </li>
+        <li>
+          <span class="step-number">3</span>
+          <div class="step-content"><strong>Swap USDC → sUSDe, re-supply.</strong> This completes one loop. The net spread on each loop is ~1% (3.5% earned minus 2.5% borrowed). Repeat for N loops based on your risk appetite.</div>
+        </li>
+        <li>
+          <span class="step-number">4</span>
+          <div class="step-content"><strong>Exit the final borrow into GHO.</strong> On your last loop, swap the borrowed funds to GHO and supply it at 7.03% rather than cycling again. This becomes a separate yield layer on top of the loop position.</div>
+        </li>
+        <li>
+          <span class="step-number">5</span>
+          <div class="step-content"><strong>Monitor the position.</strong> Set a health factor alert. Know your liquidation price before entering. GHO APY is partially incentive-driven — check it periodically.</div>
+        </li>
+      </ol>
+
+      <h2>The math</h2>
+
+      <p>Starting with $10,000 initial capital at 80% safe LTV, here's how yield scales with each additional loop:</p>
+
+      <figure>
+        <img src="images/loop-breakdown.png" alt="Loop breakdown table showing total supplied, total borrowed, GHO exit amount, net APY, and vs benchmark across 0–10 loops" />
+        <figcaption>Loop breakdown: $10,000 starting capital, sUSDe → USDC → exit to GHO</figcaption>
+      </figure>
+
+      <p>The benchmark here is GHO direct supply at 7.03%. Holding sUSDe with no loops gives 3.50% — well below it. A single loop jumps you to 7.28%, already beating the benchmark by 25 basis points.</p>
+
+      <figure>
+        <img src="images/apy-chart.png" alt="Chart showing net APY vs loop depth, with sUSDe loop APY rising from ~3.5% at 0 loops to ~8.3% at 10 loops, compared to 7.03% GHO benchmark" />
+        <figcaption>Net APY vs loop depth — the first loop produces the sharpest jump</figcaption>
+      </figure>
+
+      <p>The yield curve flattens fast. The jump from 0 to 1 loop is the biggest gain. After that, each loop adds diminishing yield while compressing your liquidation buffer. At 10 loops, you're at 8.16% — only about 0.3% more than at 5 loops (7.88%), but with meaningfully less room before liquidation.</p>
+
+      <p><strong>The practical sweet spot is 3–5 loops for most positions.</strong> Better yield than holding, without over-leveraging the collateral buffer.</p>
+
+      <h2>Risk analysis</h2>
+
+      <p>Overall strategy risk rating: <strong>Baa3</strong> — investment grade with some speculative elements.</p>
+
+      <figure>
+        <img src="images/risk-rating.png" alt="Strategy risk rating breakdown: Baa3 overall, with individual ratings for collateral quality, yield source stability, borrow spread, liquidation risk, smart contract risk, and unwind ease" />
+        <figcaption>Risk rating breakdown across six dimensions</figcaption>
+      </figure>
+
+      <div class="risk-grid">
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Collateral Quality</span>
+            <span class="risk-badge">Baa2</span>
+          </div>
+          <div class="risk-item-desc">sUSDe is yield-bearing but carries depeg risk during market stress. Not a risk-free stablecoin.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Yield Source Stability</span>
+            <span class="risk-badge">Baa2</span>
+          </div>
+          <div class="risk-item-desc">GHO at 7.03% is partially incentive-driven. The rate can change — monitor it.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Borrow Spread</span>
+            <span class="risk-badge">Ba2</span>
+          </div>
+          <div class="risk-item-desc">~1.2% net spread per loop. Thin enough that rate movements matter.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Liquidation Risk</span>
+            <span class="risk-badge">Ba2</span>
+          </div>
+          <div class="risk-item-desc">80% safe LTV is adequate at low loop counts. High loop counts compress this buffer significantly.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Smart Contract Risk</span>
+            <span class="risk-badge">Baa2</span>
+          </div>
+          <div class="risk-item-desc">Single chain on Mantle. No bridge exposure — this removes a meaningful attack surface.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Unwind Ease</span>
+            <span class="risk-badge">Baa2</span>
+          </div>
+          <div class="risk-item-desc">Sequential repayment on one chain. Straightforward to exit versus cross-chain strategies.</div>
+        </div>
+      </div>
+
+      <h2>Liquidation stress test</h2>
+
+      <p>This is the check most people skip. Run it before entering.</p>
+
+      <figure>
+        <img src="images/stress-test.png" alt="Collateral stress test showing health factor at various sUSDe price drops, from current 1.559 down to liquidation at -35.85%" />
+        <figcaption>Stress test: 1-loop position ($24,400 collateral / $14,400 debt)</figcaption>
+      </figure>
+
+      <p>For a 1-loop position with $24,400 in collateral and $14,400 in debt, the current health factor is 1.559. This is adequate but not comfortable.</p>
+
+      <p>The liquidation threshold triggers at approximately <strong>−35.85% sUSDe price drop</strong>. At −25%, the health factor hits 1.169 — which is Danger territory. At higher loop counts, this threshold moves closer to the current price. Know your number before you enter.</p>
+
+      <h2>The modelling tool</h2>
+
+      <p>I built a calculator to model this before executing. It shows real-time APY projections for any loop depth, generates a per-loop borrow guide for any starting capital, and runs the stress test against your actual position size.</p>
+
+      <figure>
+        <img src="images/loop-optimizer.png" alt="Lending Loop Optimizer dashboard showing net APY, annual income estimate, loop spread, risk rating, and per-loop borrow breakdown for a $10,000 position" />
+        <figcaption>The loop optimizer — input your capital and loop depth to get a full breakdown</figcaption>
+      </figure>
+
+      <p>Use it to find your number before touching the protocol. Adjust loop depth and watch how the liquidation buffer changes. The goal is to find the point where the yield gain no longer justifies the buffer compression.</p>
+
+      <div class="tool-cta">
+        <a href="https://lending-loop-optimizer.vercel.app/" target="_blank" class="tool-btn-primary">Try the tool →</a>
+        <a href="https://github.com/sarthak-guleria/lending-loop-optimizer" target="_blank" class="tool-btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+          View source on GitHub
+        </a>
+      </div>
+
+      <!-- Takeaways -->
+      <div class="takeaways">
+        <h3>Key takeaways</h3>
+        <ul>
+          <li>One loop already beats the GHO direct supply benchmark by 25 basis points</li>
+          <li>3–5 loops is the practical sweet spot — meaningful yield, manageable liquidation buffer</li>
+          <li>The final GHO position earns independently, adding a clean second yield layer</li>
+          <li>GHO APY is partially incentive-driven — check it periodically, it can move</li>
+          <li>Always run the stress test for your actual position size before entering</li>
+          <li>Single-chain on Mantle removes bridge risk — a real structural advantage</li>
+          <li>Higher loop counts: marginal yield gain, significant buffer compression — not worth it beyond 5 for most risk profiles</li>
+        </ul>
+      </div>
+
+      <!-- End CTA -->
+      <div class="end-cta">
+        <p>If you're curious how I think about products, systems, and trade-offs —</p>
+        <a href="../index.html" class="cta-main">See how I think →</a>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        This is not financial advice. DeFi strategies carry real risks including smart contract vulnerabilities, collateral depeg events, and liquidation. This guide is for educational purposes — do your own research and understand the risks before entering any position.
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="article-footer">
+      <a href="../writing.html" class="back-link">← Back to writing</a>
+      <div class="share-links">
+        <a href="https://x.com/Fren_pm" target="_blank">X</a>
+        <a href="https://www.linkedin.com/in/sarthak-64ba12229/" target="_blank">LinkedIn</a>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
