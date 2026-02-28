@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delta Neutral on Hyperliquid: Earn Funding Rates While the Market Does Whatever It Wants | Sarthak Guleria</title>
+  <meta name="description" content="A practical guide to delta neutral strategies and basis trading on Hyperliquid, covering ETH, BTC, SOL, XRP and the top 10 markets. Two versions: one for beginners, one for when you're feeling adventurous." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23faf8f5' width='100' height='100' rx='12'/><text x='50' y='72' font-family='Brush Script MT, cursive' font-size='58' font-style='italic' fill='%231a1a1a' text-anchor='middle'>S</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf8f5;
+      --bg-subtle: #f5f2ed;
+      --ink: #1a1a1a;
+      --ink-light: #4a4a4a;
+      --ink-faded: #888;
+      --accent: #2c5530;
+      --accent-light: #e8f0e8;
+      --border: #e5e2dd;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      line-height: 1.75;
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    nav {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink-faded);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+
+    nav a:hover { color: var(--ink); }
+    nav .home { color: var(--ink); font-weight: 500; }
+    nav .nav-links { display: flex; gap: 20px; align-items: center; }
+
+    /* Article container */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 72px 32px 120px;
+    }
+
+    /* Article header */
+    .article-header {
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .article-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .article-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime::before {
+      content: '·';
+      margin-right: 12px;
+      color: var(--border);
+    }
+
+    h1.article-title {
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .article-subtitle {
+      font-size: 18px;
+      color: var(--ink-faded);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* Article body */
+    .article-body > * + * {
+      margin-top: 28px;
+    }
+
+    .article-body h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      margin-top: 52px;
+      margin-bottom: -12px;
+    }
+
+    .article-body p {
+      color: var(--ink-light);
+    }
+
+    .article-body strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* Callout */
+    .callout {
+      background: var(--bg-subtle);
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .callout p {
+      font-size: 16px;
+      color: var(--ink-light);
+      margin: 0;
+    }
+
+    .callout p + p {
+      margin-top: 12px;
+    }
+
+    /* Tier label */
+    .tier-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 4px 10px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+
+    .tier-label.adventurous {
+      color: #7a3d00;
+      background: #fdf0e0;
+    }
+
+    /* Steps list */
+    .steps-list {
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .steps-list li {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      counter-increment: steps;
+    }
+
+    .steps-list li:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .step-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-number.adv {
+      color: #7a3d00;
+      background: #fdf0e0;
+    }
+
+    .step-content {
+      flex: 1;
+      font-size: 16px;
+      color: var(--ink-light);
+      line-height: 1.65;
+    }
+
+    /* Stat row */
+    .stat-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+    }
+
+    /* Figures */
+    figure {
+      margin: 36px 0;
+    }
+
+    figure img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      display: block;
+    }
+
+    figcaption {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* Market grid */
+    .market-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .market-item {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .market-ticker {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 7px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .market-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      line-height: 1.5;
+    }
+
+    /* Risk grid */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .risk-item {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+
+    .risk-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .risk-item-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .risk-badge {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .risk-badge.warn {
+      color: #7a3d00;
+      background: #fdf0e0;
+    }
+
+    .risk-item-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      line-height: 1.5;
+    }
+
+    /* Warning block */
+    .warning-block {
+      background: #fdf0e0;
+      border-left: 3px solid #c87000;
+      padding: 20px 24px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .warning-block p {
+      font-size: 16px;
+      color: #5c3500;
+      margin: 0;
+    }
+
+    .warning-block p + p {
+      margin-top: 10px;
+    }
+
+    /* Key takeaways */
+    .takeaways {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 32px;
+    }
+
+    .takeaways h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 16px;
+    }
+
+    .takeaways ul {
+      list-style: none;
+    }
+
+    .takeaways li {
+      font-size: 16px;
+      color: var(--ink-light);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .takeaways li:last-child { border-bottom: none; }
+
+    .takeaways li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    /* End CTA */
+    .end-cta {
+      margin-top: 56px;
+      padding: 36px 40px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .end-cta p {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--ink-faded);
+      margin-bottom: 20px;
+    }
+
+    .end-cta a.cta-main {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 28px;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .end-cta a.cta-main:hover { background: var(--ink-light); }
+
+    /* Disclaimer */
+    .disclaimer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .article-footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
+    .back-link {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: var(--ink); }
+
+    .share-links { display: flex; gap: 16px; }
+    .share-links a {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .share-links a:hover { color: var(--ink); }
+
+    /* ── Funding Rate Chart ── */
+    .fn-chart { margin: 36px 0; }
+    .fn-chart-title { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+    .fn-chart-sub { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ink-faded); margin-bottom: 14px; }
+    .fn-chart-scroll { overflow-x: auto; }
+    .fn-chart-inner { position: relative; height: 220px; min-width: 560px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .fn-zone-bg { position: absolute; top: 0; height: 220px; }
+    .fn-zero { position: absolute; top: 160px; left: 0; right: 0; border-top: 2px dashed #aaaaaa; z-index: 2; pointer-events: none; }
+    .fn-zero-lbl { position: absolute; top: 147px; left: 5px; font-family: 'Inter', sans-serif; font-size: 10px; color: #888; z-index: 3; }
+    .fn-bar-pos { position: absolute; bottom: 60px; width: 16px; border-radius: 2px 2px 0 0; background: #22c55e; }
+    .fn-bar-neg { position: absolute; top: 160px; width: 16px; border-radius: 0 0 2px 2px; background: #ef4444; }
+    .fn-zone-labels { display: flex; gap: 4px; margin-top: 8px; min-width: 560px; }
+    .fn-zlbl { font-family: 'Inter', sans-serif; font-size: 12px; text-align: center; padding: 5px 4px; border-radius: 4px; }
+    .fn-zlbl-title { font-weight: 600; display: block; margin-bottom: 1px; }
+    .fn-zlbl-sub { font-size: 11px; display: block; opacity: 0.75; }
+    .fn-legend { display: flex; align-items: center; gap: 18px; margin-top: 10px; font-family: 'Inter', sans-serif; font-size: 12px; flex-wrap: wrap; }
+    .fn-legend-item { display: flex; align-items: center; gap: 6px; }
+    .fn-legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+    .fn-figcap { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-faded); text-align: center; margin-top: 10px; }
+
+    /* ── Risk Comparison Table ── */
+    .risk-compare-wrap { margin: 36px 0; }
+    .risk-compare { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .rc-col { border-right: 1px solid var(--border); }
+    .rc-col:last-child { border-right: none; }
+    .rc-header { padding: 12px 16px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; }
+    .rc-header.green { background: #b2f2bb; color: #15803d; }
+    .rc-header.amber { background: #ffd8a8; color: #c87000; }
+    .rc-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 16px; border-top: 1px solid var(--border); font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-light); }
+    .rc-row:nth-child(even) { background: var(--bg-subtle); }
+    .rc-summary { padding: 10px 16px; border-top: 1px solid var(--border); font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ink-faded); background: var(--bg-subtle); line-height: 1.5; }
+    .rp { display: inline-block; padding: 2px 8px; border-radius: 3px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-left: 8px; }
+    .rp-low, .rp-easy { background: #b2f2bb; color: #15803d; }
+    .rp-medium, .rp-moderate { background: #ffd8a8; color: #c87000; }
+    .rp-high { background: #ffc9c9; color: #b91c1c; }
+    .rc-figcap { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-faded); text-align: center; margin-top: 10px; }
+
+    /* ── Funding Rate Explainer ── */
+    .fne-wrap { margin: 32px 0; }
+    .fne-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .fne-col {
+      border-radius: 8px;
+      padding: 18px 18px 14px;
+      border: 2px solid;
+    }
+    .fne-col.pos { background: #f0fdf4; border-color: #22c55e; }
+    .fne-col.neg { background: #fff1f2; border-color: #ef4444; }
+    .fne-col-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .fne-col.pos .fne-col-label { color: #15803d; }
+    .fne-col.neg .fne-col-label { color: #b91c1c; }
+    .fne-flow {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .fne-col.pos .fne-flow { background: #dcfce7; color: #15803d; }
+    .fne-col.neg .fne-flow { background: #fee2e2; color: #b91c1c; }
+    .fne-col-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-light);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .fne-verdict {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .fne-col.pos .fne-verdict { background: #dcfce7; color: #15803d; }
+    .fne-col.neg .fne-verdict { background: #fee2e2; color: #b91c1c; }
+
+    .fne-examples { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .fne-example {
+      border-radius: 8px;
+      padding: 16px 18px;
+      border: 1.5px solid;
+    }
+    .fne-example.live { background: #fff8f1; border-color: #f59e0b; }
+    .fne-example.hypo { background: #f0fdf4; border-color: #22c55e; }
+    .fne-ex-badge {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 3px;
+      margin-bottom: 8px;
+    }
+    .fne-example.live .fne-ex-badge { background: #fef3c7; color: #92400e; }
+    .fne-example.hypo .fne-ex-badge { background: #dcfce7; color: #15803d; }
+    .fne-ex-ticker {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      margin-bottom: 6px;
+    }
+    .fne-ex-rate {
+      font-family: 'Inter', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 2px;
+    }
+    .fne-example.live .fne-ex-rate { color: #b91c1c; }
+    .fne-example.hypo .fne-ex-rate { color: #15803d; }
+    .fne-ex-interval {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      margin-bottom: 10px;
+    }
+    .fne-ex-calc {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-light);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 7px 10px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .fne-ex-verdict {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .fne-example.live .fne-ex-verdict { color: #b91c1c; }
+    .fne-example.hypo .fne-ex-verdict { color: #15803d; }
+    .fne-snapshot {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      text-align: center;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* ── Open Interest callout ── */
+    .oi-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 28px 0;
+    }
+    .oi-header {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 12px;
+    }
+    .oi-stat-row { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--bg); margin-bottom: 12px; }
+    .oi-stat { flex: 1; padding: 12px 14px; text-align: center; border-right: 1px solid var(--border); }
+    .oi-stat:last-child { border-right: none; }
+    .oi-stat-val { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; }
+    .oi-stat-lbl { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--ink-faded); margin-top: 2px; }
+    .oi-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--ink-light);
+      line-height: 1.6;
+    }
+
+    /* ── Simulation Table ── */
+    .sim-wrap { margin: 32px 0; }
+    .sim-intro {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .sim-scroll { overflow-x: auto; }
+    .sim-table {
+      width: 100%;
+      min-width: 560px;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+    .sim-table thead th {
+      background: var(--bg-subtle);
+      color: var(--ink-faded);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+    }
+    .sim-table thead th:first-child { text-align: left; }
+    .sim-table tbody tr { border-bottom: 1px solid var(--border); }
+    .sim-table tbody tr:last-child { border-bottom: none; }
+    .sim-table tbody tr:nth-child(even) { background: var(--bg-subtle); }
+    .sim-table tbody tr.sim-row-neg { background: #fff8f8; }
+    .sim-table tbody tr.sim-row-spike { background: #fffbf0; }
+    .sim-table td { padding: 10px 12px; vertical-align: middle; text-align: right; color: var(--ink-light); }
+    .sim-table td:first-child { text-align: left; }
+    .sim-rate { font-weight: 600; font-size: 14px; }
+    .sim-rate.pos { color: #15803d; }
+    .sim-rate.neg { color: #b91c1c; }
+    .sim-label {
+      display: block;
+      font-size: 11px;
+      color: var(--ink-faded);
+      font-weight: 400;
+      margin-top: 1px;
+    }
+    .sim-apy { font-weight: 600; }
+    .sim-apy.pos { color: #15803d; }
+    .sim-apy.neg { color: #b91c1c; }
+    .sim-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .sim-badge.exit { background: #fee2e2; color: #b91c1c; }
+    .sim-badge.caution { background: #fef3c7; color: #92400e; }
+    .sim-badge.good { background: #dcfce7; color: #15803d; }
+    .sim-badge.spike { background: #fef3c7; color: #92400e; }
+    .sim-divider td { background: #f0f0f0; font-size: 11px; font-weight: 600; color: var(--ink-faded); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; text-align: left; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .sim-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      margin-top: 10px;
+      line-height: 1.5;
+      font-style: italic;
+    }
+    @media (max-width: 600px) {
+      .fne-two-col { grid-template-columns: 1fr; }
+      .fne-examples { grid-template-columns: 1fr; }
+    }
+
+    /* ── Flow Diagram (dt-*) ── */
+    .dt-diagram {
+      margin: 36px 0;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 20px 20px;
+      font-family: 'Inter', sans-serif;
+    }
+    .dt-title { font-size: 15px; font-weight: 600; color: var(--ink); text-align: center; margin-bottom: 3px; }
+    .dt-subtitle { font-size: 12px; color: var(--ink-faded); text-align: center; margin-bottom: 20px; }
+    .dt-flow { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .dt-node {
+      border-radius: 8px;
+      padding: 12px 18px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .dt-solo { min-width: 220px; width: 100%; max-width: 380px; }
+    .dt-two-col { display: flex; gap: 12px; align-items: center; width: 100%; }
+    .dt-two-col .dt-node { flex: 1; }
+    .dt-vsep { font-size: 18px; color: var(--ink-faded); text-align: center; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; line-height: 1; }
+    .dt-vsep-lbl { font-size: 10px; color: var(--ink-faded); margin-top: 2px; }
+    .dt-node-title { font-weight: 600; font-size: 13px; color: var(--ink); }
+    .dt-node-sub { font-size: 12px; margin-top: 2px; }
+    .dt-node-big { font-size: 17px; font-weight: 700; }
+    .dt-blue { background: #a5d8ff; border: 2px solid #4a9eed; }
+    .dt-blue .dt-node-sub { color: #2563eb; }
+    .dt-green { background: #b2f2bb; border: 2px solid #22c55e; }
+    .dt-green .dt-node-sub { color: #15803d; }
+    .dt-green-out { background: #d3f9d8; border: 2px solid #22c55e; }
+    .dt-green-out .dt-node-big { color: #15803d; }
+    .dt-green-out .dt-node-sub { color: #4a9eed; }
+    .dt-amber { background: #ffd8a8; border: 2px solid #f59e0b; }
+    .dt-amber .dt-node-sub { color: #c87000; }
+    .dt-arrow-v { font-size: 20px; color: #aaaaaa; line-height: 1; }
+    .dt-badge {
+      display: inline-block;
+      background: #ffd8a8;
+      border: 1px solid #f59e0b;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 11px;
+      color: #c87000;
+      font-weight: 600;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    .dt-carry-eq {
+      background: #fff3bf;
+      border: 1.5px solid #f59e0b;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #c87000;
+      text-align: center;
+      width: 100%;
+    }
+    .dt-warn {
+      background: #ffc9c9;
+      border: 2px solid #ef4444;
+      border-radius: 8px;
+      padding: 14px 16px;
+      width: 100%;
+      margin-top: 4px;
+    }
+    .dt-warn-title { font-weight: 600; font-size: 13px; color: #7a0000; margin-bottom: 6px; }
+    .dt-warn-body { font-size: 12px; color: #7a0000; line-height: 1.55; }
+    .dt-figcap { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-faded); text-align: center; margin-top: 10px; }
+
+    /* ── Protocol Cards ── */
+    .protocol-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+    }
+    .protocol-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .protocol-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .protocol-tokens {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 8px;
+      border-radius: 3px;
+      letter-spacing: 0.06em;
+    }
+    .protocol-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--ink-light);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .protocol-apy-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      background: var(--bg);
+    }
+    .protocol-apy-stat {
+      flex: 1;
+      padding: 12px 10px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .protocol-apy-stat:last-child { border-right: none; }
+    .protocol-apy-val {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .protocol-apy-lbl {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      color: var(--ink-faded);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+    .protocol-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      font-style: italic;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .container { padding: 48px 20px 80px; }
+      nav { padding: 20px; }
+      h1.article-title { font-size: 26px; }
+      .stat-row { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .risk-grid { grid-template-columns: 1fr; }
+      .market-grid { grid-template-columns: 1fr; }
+      .article-footer { flex-direction: column; gap: 16px; }
+      .end-cta { padding: 28px 24px; }
+      .risk-compare { grid-template-columns: 1fr; }
+      .rc-col { border-right: none; border-bottom: 1px solid var(--border); }
+      .rc-col:last-child { border-bottom: none; }
+      .dt-two-col { flex-direction: column; }
+      .dt-two-col .dt-node { width: 100%; }
+      .dt-solo { max-width: 100%; }
+      .protocol-apy-row { flex-direction: column; }
+      .protocol-apy-stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .protocol-apy-stat:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="home">Sarthak Guleria</a>
+    <div class="nav-links">
+      <a href="../writing.html">← Writing</a>
+      <a href="../index.html">Home</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="article-tag">DeFi</span>
+        <span class="article-date">February 2026</span>
+        <span class="article-readtime">9 min read</span>
+      </div>
+      <h1 class="article-title">Delta Neutral on Hyperliquid: Earn Funding Rates While the Market Does Whatever It Wants</h1>
+      <p class="article-subtitle">A practical guide to basis trading on Hyperliquid, covering ETH, BTC, SOL, XRP and the top 10 markets. One version for everyone. One for when you're feeling adventurous.</p>
+    </header>
+
+    <!-- Body -->
+    <div class="article-body">
+
+      <!-- Intro callout -->
+      <div class="callout">
+        <p>Most people on Hyperliquid are making a directional bet. This strategy doesn't. It earns whether ETH goes up, down, or sideways, and it runs on one of the best perpetual venues in crypto.</p>
+        <p>This is not a zero-risk trade. The risks are different, not absent. Understand them before entering.</p>
+      </div>
+
+      <h2>What delta neutral actually means</h2>
+
+      <p>A delta neutral position is one where your net exposure to price movement is zero. If ETH goes up 20%, your gains on one leg cancel out your losses on the other. If it drops 20%, same thing in reverse. You're not betting on direction. You're structurally indifferent to it.</p>
+
+      <p>That might sound pointless. Why enter a trade that doesn't move when the asset moves? Because there's a separate yield source that has nothing to do with price: <strong>the funding rate</strong>.</p>
+
+      <h2>The funding rate: your actual yield source</h2>
+
+      <p>Perpetual futures have no expiry date. To keep the perp price tethered to spot, exchanges use a periodic payment called the funding rate. When the perp trades at a premium to spot (which happens most of the time in bull markets, when leveraged longs outnumber shorts): longs pay shorts. When it trades at a discount, the direction flips.</p>
+
+      <p>On most exchanges, funding settles every 8 hours. On Hyperliquid, it settles every hour. That higher frequency means your yield compounds faster, and also means the rate can shift faster. Both matter.</p>
+
+      <p>If you're net short on perps and funding is positive, you collect that payment each hour. That's the entire thesis. The basis trade is just a structured way to sit on the short side without taking directional risk on the asset.</p>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-value">1hr</div>
+          <div class="stat-label">Hyperliquid funding interval</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">10</div>
+          <div class="stat-label">markets covered here</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">0</div>
+          <div class="stat-label">net directional delta</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Funding</div>
+          <div class="stat-label">yield source</div>
+        </div>
+      </div>
+
+      <!-- Funding rate explainer -->
+      <div class="fne-wrap">
+        <div class="fne-two-col">
+          <div class="fne-col pos">
+            <div class="fne-col-label">Positive funding rate</div>
+            <div class="fne-flow">Longs pay → Shorts collect</div>
+            <p class="fne-col-desc">The perp is trading above spot. Leveraged longs outnumber shorts. The market is paying you to hold the short side. Every hourly settlement lands in your account.</p>
+            <div class="fne-verdict">✓ You collect. This is what you want.</div>
+          </div>
+          <div class="fne-col neg">
+            <div class="fne-col-label">Negative funding rate</div>
+            <div class="fne-flow">Shorts pay → Longs collect</div>
+            <p class="fne-col-desc">The perp is trading below spot. Shorts are overcrowded or sentiment has reversed. You're now paying each hour instead of collecting. The trade is working against you.</p>
+            <div class="fne-verdict">✕ You pay. Exit signal.</div>
+          </div>
+        </div>
+
+        <div class="fne-examples">
+          <div class="fne-example live">
+            <span class="fne-ex-badge">Live snapshot · BTC-USDC</span>
+            <div class="fne-ex-ticker">BTC mark price: $65,178</div>
+            <div class="fne-ex-rate">-0.0010%</div>
+            <div class="fne-ex-interval">per hour · settles every 60 min</div>
+            <div class="fne-ex-calc">
+              On $10,000 position:<br>
+              Paying $0.10/hr · $2.40/day · $72/month
+            </div>
+            <div class="fne-ex-verdict">✕ Sit out. Funding is negative. You're the one paying.</div>
+          </div>
+          <div class="fne-example hypo">
+            <span class="fne-ex-badge">Entry scenario · hypothetical</span>
+            <div class="fne-ex-ticker">ETH during sustained bull market</div>
+            <div class="fne-ex-rate">+0.0300%</div>
+            <div class="fne-ex-interval">per hour · positive for 12+ hours</div>
+            <div class="fne-ex-calc">
+              On $10,000 position:<br>
+              Collecting $3.00/hr · $72.00/day · $2,160/month
+            </div>
+            <div class="fne-ex-verdict">✓ Enter. Persistent positive funding is the signal.</div>
+          </div>
+        </div>
+        <p class="fne-snapshot">BTC data: Hyperliquid snapshot, February 2026. Hypothetical scenario uses ETH bull market rates for illustration.</p>
+      </div>
+
+      <!-- Open Interest explanation -->
+      <div class="oi-block">
+        <div class="oi-header">Open interest: what it tells you</div>
+        <div class="oi-stat-row">
+          <div class="oi-stat">
+            <div class="oi-stat-val">$1.41B</div>
+            <div class="oi-stat-lbl">BTC-USDC OI (snapshot)</div>
+          </div>
+          <div class="oi-stat">
+            <div class="oi-stat-val">$2.29B</div>
+            <div class="oi-stat-lbl">24H volume</div>
+          </div>
+          <div class="oi-stat">
+            <div class="oi-stat-val">40×</div>
+            <div class="oi-stat-lbl">Max leverage available</div>
+          </div>
+        </div>
+        <p class="oi-desc">Open interest is the total notional value of all open perp positions on a market. High OI means a lot of capital is sitting in open leveraged trades. For this strategy, OI matters in two ways: first, high OI with positive funding confirms the market is long-heavy (longs outnumber shorts), which is exactly the setup you want as a short collecting funding. Second, a sharp drop in OI often signals mass liquidations or deleveraging, which can coincide with a funding rate reversal. Rising OI + positive funding is the ideal backdrop. Falling OI + funding turning negative is the exit signal.</p>
+      </div>
+
+      <h2>What you can realistically earn</h2>
+
+      <p>Funding rates change every hour. These projections assume a rate stays constant for the full period, which it won't. Use them as a rough calibration for different market environments, not a promise of return.</p>
+
+      <div class="sim-wrap">
+        <p class="sim-intro">Portfolio size: $10,000 and $20,000. Based on hourly settlement on Hyperliquid. All figures are gross yield before any execution costs or borrow costs (leveraged version). Annualised figures assume the rate holds for 365 days.</p>
+        <div class="sim-scroll">
+          <table class="sim-table">
+            <thead>
+              <tr>
+                <th>Hourly rate</th>
+                <th>Daily (annualised)</th>
+                <th>$10k daily</th>
+                <th>$10k monthly</th>
+                <th>$10k APY</th>
+                <th>$20k monthly</th>
+                <th>$20k APY</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="sim-row-neg">
+                <td>
+                  <span class="sim-rate neg">-0.0010%</span>
+                  <span class="sim-badge exit">Exit signal</span>
+                  <span class="sim-label">Current BTC · Feb 2026</span>
+                </td>
+                <td style="color:#b91c1c;">-0.024%</td>
+                <td style="color:#b91c1c;">-$2.40</td>
+                <td style="color:#b91c1c;">-$72</td>
+                <td><span class="sim-apy neg">-8.8%</span></td>
+                <td style="color:#b91c1c;">-$144</td>
+                <td><span class="sim-apy neg">-8.8%</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sim-rate pos">+0.0010%</span>
+                  <span class="sim-badge caution">Low</span>
+                  <span class="sim-label">Quiet market, low conviction</span>
+                </td>
+                <td>+0.024%</td>
+                <td>+$2.40</td>
+                <td>+$72</td>
+                <td><span class="sim-apy pos">+8.8%</span></td>
+                <td>+$144</td>
+                <td><span class="sim-apy pos">+8.8%</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sim-rate pos">+0.0050%</span>
+                  <span class="sim-badge good">Moderate</span>
+                  <span class="sim-label">ETH / BTC in mild bull market</span>
+                </td>
+                <td>+0.12%</td>
+                <td>+$12.00</td>
+                <td>+$360</td>
+                <td><span class="sim-apy pos">+43.8%</span></td>
+                <td>+$720</td>
+                <td><span class="sim-apy pos">+43.8%</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sim-rate pos">+0.0100%</span>
+                  <span class="sim-badge good">Strong</span>
+                  <span class="sim-label">Active bull market, ETH / SOL</span>
+                </td>
+                <td>+0.24%</td>
+                <td>+$24.00</td>
+                <td>+$720</td>
+                <td><span class="sim-apy pos">+87.6%</span></td>
+                <td>+$1,440</td>
+                <td><span class="sim-apy pos">+87.6%</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="sim-rate pos">+0.0300%</span>
+                  <span class="sim-badge good">Very high</span>
+                  <span class="sim-label">SOL / XRP during narrative cycle</span>
+                </td>
+                <td>+0.72%</td>
+                <td>+$72.00</td>
+                <td>+$2,160</td>
+                <td><span class="sim-apy pos">+262.8%</span></td>
+                <td>+$4,320</td>
+                <td><span class="sim-apy pos">+262.8%</span></td>
+              </tr>
+              <tr class="sim-row-spike">
+                <td>
+                  <span class="sim-rate pos">+0.0500%</span>
+                  <span class="sim-badge spike">Spike</span>
+                  <span class="sim-label">Don't chase. Rate will compress.</span>
+                </td>
+                <td>+1.20%</td>
+                <td>+$120.00</td>
+                <td>+$3,600</td>
+                <td><span class="sim-apy pos">+438%</span></td>
+                <td>+$7,200</td>
+                <td><span class="sim-apy pos">+438%</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="sim-note">These are theoretical projections assuming a fixed rate held for the full period. Real yield will be lower: rates fluctuate hourly, entries and exits create brief slippage, and the leveraged version subtracts borrow cost from every figure above. The moderate and strong rows (+0.005% to +0.01%) reflect realistic sustained conditions during active market cycles. The spike row (+0.05%) is shown for illustration; rates at that level almost always compress within hours.</p>
+      </div>
+
+      <h2>Which markets to run this on</h2>
+
+      <p>The top 10 markets by liquidity and volume on Hyperliquid are the cleanest venues for this strategy. Execution quality matters: a wide spread when entering or exiting the two legs creates temporary delta exposure that works against you.</p>
+
+      <div class="market-grid">
+        <div class="market-item">
+          <span class="market-ticker">ETH</span>
+          <span class="market-desc">Deepest liquidity, tightest spreads. Most stable funding. The default starting point.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">BTC</span>
+          <span class="market-desc">Equally liquid. Funding tends to be lower in magnitude than ETH but more stable. Low drama.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">SOL</span>
+          <span class="market-desc">Higher average funding in bull markets. More volatile rate; it can spike and compress quickly.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">XRP</span>
+          <span class="market-desc">Funding can run hot during narrative cycles. Watch for abrupt reversals when sentiment shifts.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">DOGE</span>
+          <span class="market-desc">Meme-driven funding spikes. High upside when sentiment is extreme, unreliable otherwise.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">AVAX</span>
+          <span class="market-desc">Mid-tier liquidity. Funding moves with broader alt sentiment rather than its own narrative.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">LINK</span>
+          <span class="market-desc">Steady trader base. Funding less volatile than pure meme assets. Decent for the strategy.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">SUI</span>
+          <span class="market-desc">Newer listing, thinner depth. Funding can be attractive but slippage risk is higher.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">HYPE</span>
+          <span class="market-desc">Native token. High funding during launch cycles. Liquidity improving but still maturing.</span>
+        </div>
+        <div class="market-item">
+          <span class="market-ticker">WIF</span>
+          <span class="market-desc">Meme asset with erratic funding. High ceiling, very short windows. Requires active monitoring.</span>
+        </div>
+      </div>
+
+      <p>For most positions, ETH and BTC are where you start. The funding is lower but the execution quality is higher, and a botched entry on a thin market erodes more of your yield than the premium funding compensates for.</p>
+
+      <h2>You're in good company: protocols doing this at scale</h2>
+
+      <p>The strategy you're running manually on Hyperliquid is structurally identical to what several major DeFi protocols have packaged into products. They've automated the entry, rebalancing, and exit, and distributed the yield as a token return. Understanding what they do clarifies exactly what you're doing.</p>
+
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <span class="protocol-name">Ethena</span>
+          <span class="protocol-tokens">USDe · sUSDe · ENA</span>
+        </div>
+        <p class="protocol-desc">Ethena's USDe is a synthetic dollar backed by spot crypto positions (primarily ETH, BTC, SOL, and BNB), each paired with an equivalent perp short. That's the delta neutral basis trade, packaged as a stablecoin. Holders of the staked version, sUSDe, receive the funding yield as APY. By late 2024, Ethena had become one of the largest stablecoins by TVL in DeFi.</p>
+        <div class="protocol-apy-row">
+          <div class="protocol-apy-stat">
+            <div class="protocol-apy-val">~19%</div>
+            <div class="protocol-apy-lbl">avg sUSDe APY in 2024</div>
+          </div>
+          <div class="protocol-apy-stat">
+            <div class="protocol-apy-val">29–33%</div>
+            <div class="protocol-apy-lbl">peak APY (bull cycle)</div>
+          </div>
+          <div class="protocol-apy-stat">
+            <div class="protocol-apy-val">5–13%</div>
+            <div class="protocol-apy-lbl">compressed range in 2025</div>
+          </div>
+        </div>
+        <p class="protocol-note">The yield compressed in 2025 as funding rates normalised across the market, which is exactly the timing risk you're managing when you decide when to enter and exit.</p>
+      </div>
+
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <span class="protocol-name">Resolv Protocol</span>
+          <span class="protocol-tokens">USR · RLP</span>
+        </div>
+        <p class="protocol-desc">Resolv uses the same delta neutral mechanics to back USR, its stablecoin. The structural difference is in how risk is layered: a leveraged tranche called RLP absorbs downside first, giving USR holders a more stable claim on the underlying yield. Same basis trade, split across two tranches by risk appetite.</p>
+      </div>
+
+      <div class="callout">
+        <p>The difference between running this yourself and using a protocol: protocols automate the entry, rebalancing, and exit, and charge a fee for doing it. When you run the strategy manually on Hyperliquid, you keep the full yield, carry the full risk, and do the monitoring yourself. Neither is wrong. They're different trade-offs for different situations.</p>
+      </div>
+
+      <h2>The easy version: cash-and-carry basis trade</h2>
+
+      <div class="tier-label">For everyone</div>
+
+      <p>This is the cleanest implementation. Two legs, one chain, no borrowing. You're long the asset on spot and short the equivalent size on perps. Net delta zero. Funding flows to you as long as the rate stays positive.</p>
+
+      <div class="dt-diagram">
+        <p class="dt-title">Cash-and-Carry Basis Trade</p>
+        <p class="dt-subtitle">Delta neutral: earn funding, not price direction</p>
+        <div class="dt-flow">
+          <div class="dt-node dt-blue dt-solo">
+            <div class="dt-node-title">Your Capital</div>
+          </div>
+          <div class="dt-arrow-v">↓</div>
+          <div class="dt-two-col">
+            <div class="dt-node dt-green">
+              <div class="dt-node-title">Buy Spot</div>
+              <div class="dt-node-sub">ETH / BTC / SOL / XRP</div>
+            </div>
+            <div class="dt-vsep">↕<div class="dt-vsep-lbl">equal notional</div></div>
+            <div class="dt-node dt-blue">
+              <div class="dt-node-title">Short Perp (1×)</div>
+              <div class="dt-node-sub">ETH / BTC / SOL / XRP</div>
+            </div>
+          </div>
+          <div class="dt-arrow-v">↓</div>
+          <div class="dt-node dt-green-out dt-solo">
+            <div class="dt-node-big">Net Delta = 0</div>
+            <div class="dt-node-sub">Price moves cancel out · Direction no longer matters</div>
+          </div>
+          <div class="dt-arrow-v" style="color:#c87000;">↓</div>
+          <div class="dt-node dt-amber dt-solo">
+            <div class="dt-node-title">Funding Rate Collected</div>
+            <div class="dt-node-sub" style="color:#c87000;">Settled every 1 hour. Your entire yield source.</div>
+          </div>
+        </div>
+      </div>
+      <p class="dt-figcap">Two legs in, funding out. The entire structure in one view.</p>
+
+      <ol class="steps-list">
+        <li>
+          <span class="step-number">1</span>
+          <div class="step-content"><strong>Check the funding rate before entering.</strong> Open Hyperliquid, navigate to the market you want, and check the current funding rate and recent history. A rate that's been positive for several consecutive periods is more meaningful than a single spike. You're looking for persistence, not size.</div>
+        </li>
+        <li>
+          <span class="step-number">2</span>
+          <div class="step-content"><strong>Buy the spot asset.</strong> On Hyperliquid's spot market (or any exchange with deep liquidity), buy the asset: ETH, BTC, SOL, or XRP. This is your long leg. Use a limit order to avoid slippage, especially on larger sizes.</div>
+        </li>
+        <li>
+          <span class="step-number">3</span>
+          <div class="step-content"><strong>Open an equal-sized perp short.</strong> On Hyperliquid's perp market, short the same asset at 1x leverage, matched as closely as possible in notional size to your spot position. Execute this immediately after the spot leg, as the time between the two creates temporary directional exposure.</div>
+        </li>
+        <li>
+          <span class="step-number">4</span>
+          <div class="step-content"><strong>Verify your net delta.</strong> Spot long + perp short of equal size = zero net exposure. A $10,000 spot long and a $10,000 perp short means a $1 move in ETH adds $10 on spot and loses $10 on perps, netting out to zero. Confirm this before walking away.</div>
+        </li>
+        <li>
+          <span class="step-number">5</span>
+          <div class="step-content"><strong>Collect funding, monitor the rate.</strong> Funding settles into your account every hour. The position is passive, but not set-and-forget. Check the funding rate periodically. If it flips negative and stays there, you're now paying instead of collecting. Know your exit before that happens, not after.</div>
+        </li>
+        <li>
+          <span class="step-number">6</span>
+          <div class="step-content"><strong>Unwind both legs simultaneously.</strong> When you exit, close the perp short and sell the spot position at the same time. Same logic as entry: time between the two legs creates delta exposure. Unwind clean.</div>
+        </li>
+      </ol>
+
+      <div class="fn-chart">
+        <p class="fn-chart-title">Funding Rate: Illustrative Pattern</p>
+        <p class="fn-chart-sub">Rates vary by market and conditions. Check live on Hyperliquid.</p>
+        <div class="fn-chart-scroll">
+          <div class="fn-chart-inner">
+            <!-- Zone backgrounds -->
+            <div class="fn-zone-bg" style="left:38px;width:188px;background:#22c55e;opacity:0.12;"></div>
+            <div class="fn-zone-bg" style="left:230px;width:104px;background:#f59e0b;opacity:0.14;"></div>
+            <div class="fn-zone-bg" style="left:338px;width:83px;background:#ef4444;opacity:0.14;"></div>
+            <div class="fn-zone-bg" style="left:425px;width:125px;background:#22c55e;opacity:0.12;"></div>
+            <!-- Zero line -->
+            <div class="fn-zero"></div>
+            <span class="fn-zero-lbl">0%</span>
+            <!-- Entry zone: bars 0–8 (positive, moderate) -->
+            <div class="fn-bar-pos" style="left:40px;height:61px;"></div>
+            <div class="fn-bar-pos" style="left:61px;height:73px;"></div>
+            <div class="fn-bar-pos" style="left:82px;height:84px;"></div>
+            <div class="fn-bar-pos" style="left:103px;height:90px;"></div>
+            <div class="fn-bar-pos" style="left:124px;height:78px;"></div>
+            <div class="fn-bar-pos" style="left:145px;height:70px;"></div>
+            <div class="fn-bar-pos" style="left:166px;height:96px;"></div>
+            <div class="fn-bar-pos" style="left:187px;height:83px;"></div>
+            <div class="fn-bar-pos" style="left:208px;height:76px;"></div>
+            <!-- Spike: bars 9–13 (tall then tapering) -->
+            <div class="fn-bar-pos" style="left:232px;height:148px;"></div>
+            <div class="fn-bar-pos" style="left:253px;height:160px;"></div>
+            <div class="fn-bar-pos" style="left:274px;height:118px;"></div>
+            <div class="fn-bar-pos" style="left:295px;height:87px;"></div>
+            <div class="fn-bar-pos" style="left:316px;height:49px;"></div>
+            <!-- Compressed / negative: bars 14–17 -->
+            <div class="fn-bar-pos" style="left:340px;height:14px;"></div>
+            <div class="fn-bar-neg" style="left:361px;height:28px;"></div>
+            <div class="fn-bar-neg" style="left:382px;height:54px;"></div>
+            <div class="fn-bar-neg" style="left:403px;height:22px;"></div>
+            <!-- Recovery: bars 18–23 -->
+            <div class="fn-bar-pos" style="left:427px;height:21px;"></div>
+            <div class="fn-bar-pos" style="left:448px;height:43px;"></div>
+            <div class="fn-bar-pos" style="left:469px;height:66px;"></div>
+            <div class="fn-bar-pos" style="left:490px;height:80px;"></div>
+            <div class="fn-bar-pos" style="left:511px;height:90px;"></div>
+            <div class="fn-bar-pos" style="left:532px;height:83px;"></div>
+          </div>
+          <div class="fn-zone-labels">
+            <div style="width:40px;flex-shrink:0;"></div>
+            <div class="fn-zlbl" style="flex:9;background:#e8f5e9;color:#15803d;"><span class="fn-zlbl-title">Entry zone</span><span class="fn-zlbl-sub">look for persistence</span></div>
+            <div style="width:8px;flex-shrink:0;"></div>
+            <div class="fn-zlbl" style="flex:5;background:#fff8e1;color:#c87000;"><span class="fn-zlbl-title">Don't chase spikes</span><span class="fn-zlbl-sub">rate will compress</span></div>
+            <div style="width:8px;flex-shrink:0;"></div>
+            <div class="fn-zlbl" style="flex:4;background:#fce4e4;color:#b91c1c;"><span class="fn-zlbl-title">Exit signal</span><span class="fn-zlbl-sub">rate flipped negative</span></div>
+            <div style="width:8px;flex-shrink:0;"></div>
+            <div class="fn-zlbl" style="flex:6;background:#e8f5e9;color:#15803d;"><span class="fn-zlbl-title">Recovery</span><span class="fn-zlbl-sub">re-enter here</span></div>
+          </div>
+        </div>
+        <div class="fn-legend">
+          <div class="fn-legend-item"><div class="fn-legend-dot" style="background:#22c55e;"></div><span style="color:#15803d;">Positive (you collect)</span></div>
+          <div class="fn-legend-item"><div class="fn-legend-dot" style="background:#ef4444;"></div><span style="color:#b91c1c;">Negative (you pay)</span></div>
+          <span style="font-family:'Inter',sans-serif;font-size:11px;color:#888;margin-left:auto;">Time (hourly settlements) →</span>
+        </div>
+        <p class="fn-figcap">Funding rate history: persistence matters more than the peak rate</p>
+      </div>
+
+      <h2>Feeling adventurous: the leveraged basis trade</h2>
+
+      <div class="tier-label adventurous">Advanced</div>
+
+      <div class="warning-block">
+        <p>This version introduces borrowing cost and liquidation risk on the spot leg. The structure is the same, but leverage changes what can go wrong. Read the risk section before entering.</p>
+      </div>
+
+      <p>In the standard basis trade, your capital sits fully deployed in spot. The leveraged version uses margin on the spot leg to control a larger position with less capital. A larger spot position means a larger paired short, and more funding collected in absolute terms.</p>
+
+      <p>The math is more involved. Your net yield is no longer just the funding rate; it's the funding rate <em>minus the borrowing cost on the spot leverage</em>. When funding is high, the spread is attractive. When funding compresses, the borrowing cost can flip you from positive to negative carry without the asset price moving at all.</p>
+
+      <div class="dt-diagram">
+        <p class="dt-title">Leveraged Basis Trade</p>
+        <p class="dt-subtitle">More funding captured, but two things can now liquidate you</p>
+        <div class="dt-flow">
+          <div class="dt-two-col">
+            <div class="dt-node dt-blue">
+              <div class="dt-node-title">Your Capital</div>
+            </div>
+            <div class="dt-vsep">+</div>
+            <div class="dt-node dt-amber">
+              <div class="dt-node-title">Borrowed Capital</div>
+              <div class="dt-node-sub" style="color:#c87000;">carries borrow cost</div>
+            </div>
+          </div>
+          <div class="dt-arrow-v">↓</div>
+          <div class="dt-carry-eq">Net carry = Funding Rate − Borrow Cost</div>
+          <div class="dt-arrow-v">↓</div>
+          <div class="dt-two-col">
+            <div class="dt-node dt-green">
+              <div class="dt-node-title">Leveraged Spot Long <span class="dt-badge">2–3×</span></div>
+              <div class="dt-node-sub">ETH / BTC / SOL / XRP</div>
+            </div>
+            <div class="dt-vsep">↕<div class="dt-vsep-lbl">equal notional</div></div>
+            <div class="dt-node dt-blue">
+              <div class="dt-node-title">Short Perp (matched size)</div>
+              <div class="dt-node-sub">ETH / BTC / SOL / XRP</div>
+            </div>
+          </div>
+          <div class="dt-arrow-v">↓</div>
+          <div class="dt-node dt-green-out dt-solo">
+            <div class="dt-node-big">Net Delta = 0</div>
+            <div class="dt-node-sub">Price still cancels, but more capital at work</div>
+          </div>
+          <div class="dt-arrow-v" style="color:#c87000;">↓</div>
+          <div class="dt-node dt-amber dt-solo">
+            <div class="dt-node-title">Funding Collected</div>
+            <div class="dt-node-sub" style="color:#c87000;">Larger in absolute terms, net of borrow cost</div>
+          </div>
+          <div class="dt-warn">
+            <div class="dt-warn-title">⚠ Independent liquidation thresholds</div>
+            <div class="dt-warn-body">Spot and perp carry separate margin accounts. A large price move can liquidate the spot leg even with the hedge in place, because they don't share margin. Know your spot liquidation price before entering.</div>
+          </div>
+        </div>
+      </div>
+      <p class="dt-figcap">Leveraged basis: two yield sources in tension, funding in and borrow cost out</p>
+
+      <ol class="steps-list">
+        <li>
+          <span class="step-number adv">1</span>
+          <div class="step-content"><strong>Decide on your leverage multiplier.</strong> This determines how much spot you control per unit of capital. Higher leverage means more funding captured, but the liquidation threshold on the spot leg moves closer to the current price. Start conservative. The extra funding from high leverage rarely justifies the compression of your buffer.</div>
+        </li>
+        <li>
+          <span class="step-number adv">2</span>
+          <div class="step-content"><strong>Open the leveraged spot position.</strong> Use Hyperliquid's spot margin or a compatible lending protocol to establish the leveraged long. Note your effective borrow rate: this is the cost you're carrying that eats into funding income.</div>
+        </li>
+        <li>
+          <span class="step-number adv">3</span>
+          <div class="step-content"><strong>Open the matched perp short.</strong> Short the same notional size as your full leveraged spot exposure, not just your initial capital. A $5,000 deposit with 2x leverage means you're long $10,000 of spot, so your perp short should be $10,000 notional. Delta only nets to zero when the sizes actually match.</div>
+        </li>
+        <li>
+          <span class="step-number adv">4</span>
+          <div class="step-content"><strong>Understand what can liquidate you.</strong> This is the part most people skip. The spot leg and the perp leg are separate positions with separate margin and separate liquidation thresholds. A large enough price move can liquidate the spot leg even though the perp is hedging it, because they don't share margin. Know your spot liquidation price before you enter.</div>
+        </li>
+        <li>
+          <span class="step-number adv">5</span>
+          <div class="step-content"><strong>Monitor both carry and buffer.</strong> Check two things on a recurring basis: (1) Is funding still covering the borrow cost? (2) Is the spot position still safely above liquidation? Either can change independent of the other. Set alerts for both.</div>
+        </li>
+        <li>
+          <span class="step-number adv">6</span>
+          <div class="step-content"><strong>Unwind in sequence if needed.</strong> If you need to exit quickly, close the perp short first to release the hedge, then unwind the spot position. Closing spot first while the perp short remains open leaves you with a short-only position, directional exposure you didn't intend.</div>
+        </li>
+      </ol>
+
+      <h2>Risk analysis</h2>
+
+      <p>The standard basis trade is a manageable strategy: the risks are real but bounded and mostly come down to monitoring. The leveraged version introduces meaningful new exposures that require active attention. Here's how the two compare across each dimension.</p>
+
+      <div class="risk-compare-wrap">
+        <div class="risk-compare">
+          <div class="rc-col">
+            <div class="rc-header green">Standard Basis Trade</div>
+            <div class="rc-row"><span>Funding Rate Stability</span><span class="rp rp-medium">Medium</span></div>
+            <div class="rc-row"><span>Execution Risk</span><span class="rp rp-low">Low</span></div>
+            <div class="rc-row"><span>Liquidation Risk</span><span class="rp rp-low">Low</span></div>
+            <div class="rc-row"><span>Platform Risk</span><span class="rp rp-low">Low</span></div>
+            <div class="rc-row"><span>Unwind Ease</span><span class="rp rp-easy">Easy</span></div>
+            <div class="rc-summary">Primary risk: funding flips negative. Manageable with monitoring.</div>
+          </div>
+          <div class="rc-col">
+            <div class="rc-header amber">Leveraged Basis Trade</div>
+            <div class="rc-row"><span>Funding Rate Stability</span><span class="rp rp-medium">Medium</span></div>
+            <div class="rc-row"><span>Execution Risk</span><span class="rp rp-low">Low</span></div>
+            <div class="rc-row"><span>Liquidation Risk</span><span class="rp rp-high">High</span></div>
+            <div class="rc-row"><span>Platform Risk</span><span class="rp rp-low">Low</span></div>
+            <div class="rc-row"><span>Unwind Ease</span><span class="rp rp-moderate">Moderate</span></div>
+            <div class="rc-summary">Independent liquidation thresholds add real risk. Active monitoring required.</div>
+          </div>
+        </div>
+        <p class="rc-figcap">Risk comparison across five dimensions: standard vs. leveraged</p>
+      </div>
+
+      <div class="risk-grid">
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Funding Rate Stability</span>
+          </div>
+          <div class="risk-item-desc">Rates are variable and can flip negative. Extended negative funding turns you from collector to payer. No rate is guaranteed.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Execution Risk</span>
+          </div>
+          <div class="risk-item-desc">Two legs entered sequentially means brief directional exposure at each entry and exit. Worse on thin markets, negligible on ETH/BTC.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Liquidation Risk (Standard)</span>
+          </div>
+          <div class="risk-item-desc">At 1x on the perp leg, liquidation requires extreme price movement. The spot leg has no liquidation risk without leverage.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Liquidation Risk (Leveraged)</span>
+          </div>
+          <div class="risk-item-desc">The spot and perp legs carry independent liquidation thresholds. A large move can wipe the spot position despite the hedge being in place.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Platform Risk</span>
+          </div>
+          <div class="risk-item-desc">Hyperliquid is on-chain with non-custodial perps. No centralised exchange custody risk. Smart contract and validator risk remain.</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-item-label">Unwind Ease</span>
+          </div>
+          <div class="risk-item-desc">Standard version unwinds cleanly on a single venue. Leveraged version requires sequenced unwinding: spot then perp, or perp then spot, depending on conditions.</div>
+        </div>
+      </div>
+
+      <h2>The one thing most people get wrong</h2>
+
+      <p>They enter when funding is at its peak, the exact moment it's most likely to mean-revert. A funding rate spike is usually a signal that the market is extremely one-sided, which often precedes a reversal in sentiment and a collapse in the rate. The trade works best when entered into <em>sustained</em> positive funding, not spikes.</p>
+
+      <p>The second mistake: treating it as passive. Funding rates move. Borrow costs move. Liquidation thresholds don't care that your other leg is hedging you. The position needs to be checked, not obsessively but regularly.</p>
+
+      <figure style="display:none">
+        <img src="images/delta-neutral-dashboard.png" alt="Delta neutral position tracker showing live funding rate, estimated daily yield, borrow cost (leveraged version), net carry, and spot liquidation buffer" />
+        <figcaption>The position tracker: net carry and buffer in one view</figcaption>
+      </figure>
+
+      <p>I'm updating the modelling tool to track this alongside the AAVE loop strategy: net carry calculation, funding rate history, and liquidation stress test for the leveraged version. It'll be linked here when it's live.</p>
+
+      <!-- Takeaways -->
+      <div class="takeaways">
+        <h3>Key takeaways</h3>
+        <ul>
+          <li>Delta neutral means zero directional exposure. You profit from funding, not price movement</li>
+          <li>Hyperliquid settles funding every hour, not every 8 hours. Rates compound faster and can shift faster</li>
+          <li>ETH and BTC first: deepest liquidity, tightest entry/exit, most stable funding</li>
+          <li>SOL, XRP, and smaller caps offer higher peak rates, with meaningfully higher rate volatility</li>
+          <li>Enter into sustained positive funding, not spikes. Spikes are the signal the trade is crowded</li>
+          <li>Standard version: risk is funding flipping negative. Know your exit before it happens</li>
+          <li>Leveraged version: spot and perp legs have independent liquidation thresholds: the hedge does not protect against spot liquidation</li>
+          <li>Net carry on the leveraged version = funding rate minus borrow cost. Both move independently</li>
+          <li>Unwind both legs simultaneously on exit: time between legs creates the delta you built this to avoid</li>
+        </ul>
+      </div>
+
+      <!-- End CTA -->
+      <div class="end-cta">
+        <p>If you're curious how I think about products, systems, and trade-offs:</p>
+        <a href="../index.html" class="cta-main">See how I think →</a>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        This is not financial advice. Delta neutral strategies carry real risks including funding rate reversals, liquidation on leveraged positions, smart contract vulnerabilities, and execution slippage. This guide is for educational purposes. Do your own research and understand the risks before entering any position.
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="article-footer">
+      <a href="../writing.html" class="back-link">← Back to writing</a>
+      <div class="share-links">
+        <a href="https://x.com/Fren_pm" target="_blank">X</a>
+        <a href="https://www.linkedin.com/in/sarthak-64ba12229/" target="_blank">LinkedIn</a>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
