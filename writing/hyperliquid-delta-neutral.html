@@ -927,6 +927,62 @@
       .protocol-apy-stat { border-right: none; border-bottom: 1px solid var(--border); }
       .protocol-apy-stat:last-child { border-bottom: none; }
     }
+
+    /* Tool CTA */
+    .tool-cta {
+      margin: 36px 0;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 24px 28px;
+    }
+    .tool-cta-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .tool-cta p {
+      font-size: 16px;
+      color: var(--ink-light);
+      margin: 0 0 18px;
+      line-height: 1.65;
+    }
+    .tool-cta-link {
+      font-family: 'Inter', sans-serif;
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 9px 20px;
+      border-radius: 4px;
+      transition: opacity 0.15s;
+    }
+    .tool-cta-link:hover { opacity: 0.85; }
+
+    /* Tool screenshot */
+    .tool-screenshot {
+      margin: 32px 0;
+    }
+    .tool-screenshot img {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: block;
+    }
+    .tool-screenshot figcaption {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      margin-top: 8px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -1535,12 +1591,16 @@
 
       <p>The second mistake: treating it as passive. Funding rates move. Borrow costs move. Liquidation thresholds don't care that your other leg is hedging you. The position needs to be checked, not obsessively but regularly.</p>
 
-      <figure style="display:none">
-        <img src="images/delta-neutral-dashboard.png" alt="Delta neutral position tracker showing live funding rate, estimated daily yield, borrow cost (leveraged version), net carry, and spot liquidation buffer" />
-        <figcaption>The position tracker: net carry and buffer in one view</figcaption>
+      <figure class="tool-screenshot">
+        <img src="images/fren-labs-delta-neutral.png" alt="Fren Labs Delta Neutral Explorer — live funding rates across 10 Hyperliquid markets, ranked position recommendations, carry breakdown by timeframe, and leveraged liquidation stress test" />
+        <figcaption>Fren Labs Delta Neutral Explorer: live rates, ranked recommendations, and carry breakdown in one view</figcaption>
       </figure>
 
-      <p>I'm updating the modelling tool to track this alongside the AAVE loop strategy: net carry calculation, funding rate history, and liquidation stress test for the leveraged version. It'll be linked here when it's live.</p>
+      <div class="tool-cta">
+        <div class="tool-cta-label">Interactive tool</div>
+        <p>The numbers in this guide are modelled in real time on the <strong>Fren Labs Delta Neutral Explorer</strong>. Live funding rates from Hyperliquid across 10 markets, ranked position recommendations based on current conditions, carry breakdown by hour/day/month/year, and a liquidation stress test for the leveraged version.</p>
+        <a href="https://fren-labs.vercel.app/delta-neutral" target="_blank" rel="noopener noreferrer" class="tool-cta-link">Open Delta Neutral Explorer →</a>
+      </div>
 
       <!-- Takeaways -->
       <div class="takeaways">
