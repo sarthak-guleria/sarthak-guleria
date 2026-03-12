@@ -582,6 +582,89 @@
             opacity: 1;
         }
 
+        /* Fren Labs tool cards */
+        .tools-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .tool-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .tool-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .tool-card-header h4 {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 17px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .tool-card-badge {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tool-card-desc {
+            font-size: 15px;
+            color: var(--ink-light);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .tool-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: var(--ink-faded);
+            margin-bottom: 14px;
+        }
+
+        .tool-card-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .tool-card-link:hover {
+            text-decoration: underline;
+        }
+
+        .fren-labs-cta {
+            display: inline-block;
+            margin-top: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .fren-labs-cta:hover {
+            text-decoration: underline;
+        }
+
         /* Mobile */
         @media (max-width: 600px) {
             .map-title {
@@ -854,61 +937,60 @@
             <!-- Path 5 -->
             <li class="path-item" data-path="4">
                 <div class="path-header" onclick="togglePath(this)">
-                    <span class="path-title">What I'm Building — PayCabal</span>
+                    <span class="path-title">What I'm Building — Fren Labs</span>
                     <span class="path-toggle">+</span>
                 </div>
                 <div class="path-content">
                     <p class="path-opening">
-                        <a href="https://paycabal.xyz" target="_blank" style="color: inherit; text-decoration: underline;">PayCabal</a> is an independent comparison tool for crypto payment cards, fees, and real-world usability.<br>
-                        It exists because payment products are easier to sell than to understand.
+                        I build browser-based tools that model DeFi strategies before you risk real capital.<br>
+                        Stress-test the numbers, understand the risks, then decide.
                     </p>
-                    <ul class="checkpoints">
-                        <li class="checkpoint">
-                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
-                                <span class="checkpoint-marker">+</span>
-                                <span class="checkpoint-title">The confusion that triggered it</span>
+
+                    <div class="tools-grid">
+                        <div class="tool-card">
+                            <div class="tool-card-header">
+                                <h4>Loop Optimizer</h4>
+                                <span class="tool-card-badge">Live</span>
                             </div>
-                            <div class="checkpoint-content">
-                                Comparing cards and payment providers felt intentionally opaque.
+                            <p class="tool-card-desc">Model yield looping strategies on Aave V3. Find the optimal loop depth and stress-test liquidation thresholds.</p>
+                            <div class="tool-card-meta">
+                                <span>Strategy: sUSDe → GHO</span>
+                                <span>Platform: Aave V3</span>
+                                <span>Chain: Ethereum</span>
                             </div>
-                        </li>
-                        <li class="checkpoint">
-                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
-                                <span class="checkpoint-marker">+</span>
-                                <span class="checkpoint-title">One decision I debated</span>
+                            <a href="https://fren-labs.vercel.app/loop" target="_blank" class="tool-card-link">Try Loop Optimizer →</a>
+                        </div>
+
+                        <div class="tool-card">
+                            <div class="tool-card-header">
+                                <h4>Delta Neutral Explorer</h4>
+                                <span class="tool-card-badge">Live</span>
                             </div>
-                            <div class="checkpoint-content">
-                                Coverage versus accuracy. I chose accuracy.
+                            <p class="tool-card-desc">Basis trading and funding rate capture on Hyperliquid. Live rates across 10 markets with ranked position recommendations.</p>
+                            <div class="tool-card-meta">
+                                <span>Platform: Hyperliquid</span>
+                                <span>Markets: 10 Assets</span>
+                                <span>Refresh: 5 min</span>
                             </div>
-                        </li>
-                        <li class="checkpoint">
-                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
-                                <span class="checkpoint-marker">+</span>
-                                <span class="checkpoint-title">One feature I didn't build</span>
+                            <a href="https://fren-labs.vercel.app/delta-neutral" target="_blank" class="tool-card-link">Try Delta Neutral Explorer →</a>
+                        </div>
+
+                        <div class="tool-card">
+                            <div class="tool-card-header">
+                                <h4>PayCabal</h4>
+                                <span class="tool-card-badge">Live</span>
                             </div>
-                            <div class="checkpoint-content">
-                                Rankings without context mislead more than they help.
+                            <p class="tool-card-desc">Curated registry for comparing crypto payment cards, fees, and real-world usability.</p>
+                            <div class="tool-card-meta">
+                                <span>Type: Registry</span>
+                                <span>Providers: 8+</span>
+                                <span>Data: Human-verified</span>
                             </div>
-                        </li>
-                        <li class="checkpoint">
-                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
-                                <span class="checkpoint-marker">+</span>
-                                <span class="checkpoint-title">How I decide what 'good enough' means</span>
-                            </div>
-                            <div class="checkpoint-content">
-                                If a user can explain the trade-off back to me, it's good enough.
-                            </div>
-                        </li>
-                        <li class="checkpoint">
-                            <div class="checkpoint-header" onclick="toggleCheckpoint(this)">
-                                <span class="checkpoint-marker">+</span>
-                                <span class="checkpoint-title">What I'm still unsure about</span>
-                            </div>
-                            <div class="checkpoint-content">
-                                Where to draw the line between simplicity and completeness.
-                            </div>
-                        </li>
-                    </ul>
+                            <a href="https://paycabal.xyz" target="_blank" class="tool-card-link">Try PayCabal →</a>
+                        </div>
+                    </div>
+
+                    <a href="https://fren-labs.vercel.app" target="_blank" class="fren-labs-cta">Explore all tools at Fren Labs →</a>
                 </div>
             </li>
 
