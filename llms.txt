@@ -1,0 +1,23 @@
+# Sarthak Guleria
+
+Personal site for Sarthak Guleria — product manager with 4+ years in fintech and payments.
+
+## About
+
+- Homepage: https://sarthak-guleria.github.io/sarthak-guleria/
+- Writing: https://sarthak-guleria.github.io/sarthak-guleria/writing.html
+- X: https://x.com/Fren_pm
+- LinkedIn: https://www.linkedin.com/in/sarthak-64ba12229/
+
+## Writing
+
+Technical guides on DeFi mechanics, written for practitioners.
+
+- What the Heck is Liquidity? — https://sarthak-guleria.github.io/sarthak-guleria/writing/what-the-heck-is-liquidity.html
+  From TradFi dark pools to Uniswap math: liquidity, AMMs, impermanent loss, and LP mechanics explained fully.
+
+- Delta Neutral on Hyperliquid — https://sarthak-guleria.github.io/sarthak-guleria/writing/hyperliquid-delta-neutral.html
+  Practical guide to basis trading and earning funding rates on Hyperliquid across ETH, BTC, SOL, XRP and top markets.
+
+- A Practical Guide to Yield Looping on Aave on Mantle — https://sarthak-guleria.github.io/sarthak-guleria/writing/aave-loop-guide.html
+  How to use sUSDe, GHO, and Aave E-Mode to amplify yield through looping, with full risk analysis and stress test.
