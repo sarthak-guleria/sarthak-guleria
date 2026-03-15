@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What the Heck is Liquidity? | Sarthak Guleria</title>
+  <meta name="description" content="From TradFi dark pools to Uniswap math: why markets need liquidity, who provides it, and what actually happens to your money when you LP." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23faf8f5' width='100' height='100' rx='12'/><text x='50' y='72' font-family='Brush Script MT, cursive' font-size='58' font-style='italic' fill='%231a1a1a' text-anchor='middle'>S</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf8f5;
+      --bg-subtle: #f5f2ed;
+      --ink: #1a1a1a;
+      --ink-light: #4a4a4a;
+      --ink-faded: #888;
+      --accent: #2c5530;
+      --accent-light: #e8f0e8;
+      --border: #e5e2dd;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      line-height: 1.75;
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    nav {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink-faded);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+
+    nav a:hover { color: var(--ink); }
+    nav .home { color: var(--ink); font-weight: 500; }
+    nav .nav-links { display: flex; gap: 20px; align-items: center; }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 72px 32px 120px;
+    }
+
+    .article-header {
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .article-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .article-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime::before {
+      content: '·';
+      margin-right: 12px;
+      color: var(--border);
+    }
+
+    h1.article-title {
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .article-subtitle {
+      font-size: 18px;
+      color: var(--ink-faded);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .article-body > * + * {
+      margin-top: 28px;
+    }
+
+    .article-body h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      margin-top: 52px;
+      margin-bottom: -12px;
+    }
+
+    .article-body p {
+      color: var(--ink-light);
+    }
+
+    .article-body strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .callout {
+      background: var(--bg-subtle);
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .callout p {
+      font-size: 16px;
+      color: var(--ink-light);
+      margin: 0;
+    }
+
+    .callout p + p {
+      margin-top: 12px;
+    }
+
+    /* Stat row */
+    .stat-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .stat-value.negative { color: #b94040; }
+
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      line-height: 1.4;
+    }
+
+    /* Formula block */
+    .formula-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px 28px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .formula-block .formula {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .formula-block .formula-desc {
+      font-size: 13px;
+      color: var(--ink-faded);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* Comparison table */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+
+    .compare-table th {
+      background: var(--bg-subtle);
+      color: var(--ink-faded);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .compare-table td {
+      padding: 14px 16px;
+      color: var(--ink-light);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .compare-table td:first-child {
+      color: var(--ink);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* IL curve visual */
+    .il-curve {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .il-curve-header {
+      background: var(--bg-subtle);
+      padding: 12px 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .il-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+
+    .il-row:last-child { border-bottom: none; }
+
+    .il-price {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      width: 100px;
+      flex-shrink: 0;
+    }
+
+    .il-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-subtle);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .il-bar {
+      height: 100%;
+      background: #b94040;
+      border-radius: 4px;
+      opacity: 0.7;
+    }
+
+    .il-pct {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #b94040;
+      width: 52px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* Steps list */
+    .steps-list {
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .steps-list li {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      counter-increment: steps;
+    }
+
+    .steps-list li:first-child { border-top: 1px solid var(--border); }
+
+    .step-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+      font-size: 16px;
+      color: var(--ink-light);
+      line-height: 1.65;
+    }
+
+    /* Takeaways */
+    .takeaways {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 32px;
+    }
+
+    .takeaways h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 16px;
+    }
+
+    .takeaways ul { list-style: none; }
+
+    .takeaways li {
+      font-size: 16px;
+      color: var(--ink-light);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .takeaways li:last-child { border-bottom: none; }
+
+    .takeaways li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* Tool CTA */
+    .tool-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .tool-btn-primary {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 24px;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .tool-btn-primary:hover { background: var(--ink-light); }
+
+    /* End CTA */
+    .end-cta {
+      margin-top: 56px;
+      padding: 36px 40px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .end-cta p {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--ink-faded);
+      margin-bottom: 20px;
+    }
+
+    .end-cta a.cta-main {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 28px;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .end-cta a.cta-main:hover { background: var(--ink-light); }
+
+    .disclaimer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      line-height: 1.6;
+    }
+
+    .article-footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
+    .back-link {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: var(--ink); }
+
+    .share-links { display: flex; gap: 16px; }
+
+    .share-links a {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .share-links a:hover { color: var(--ink); }
+
+    @media (max-width: 600px) {
+      .container { padding: 48px 20px 80px; }
+      nav { padding: 20px; }
+      h1.article-title { font-size: 26px; }
+      .stat-row { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .article-footer { flex-direction: column; gap: 16px; }
+      .tool-cta { flex-direction: column; }
+      .end-cta { padding: 28px 24px; }
+      .il-row { gap: 10px; }
+      .il-price { width: 80px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="home">Sarthak Guleria</a>
+    <div class="nav-links">
+      <a href="../writing.html">← Writing</a>
+      <a href="../index.html">Home</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="article-tag">DeFi</span>
+        <span class="article-date">March 2026</span>
+        <span class="article-readtime">12 min read</span>
+      </div>
+      <h1 class="article-title">What the Heck is Liquidity?</h1>
+      <p class="article-subtitle">From TradFi dark pools to Uniswap math: why markets need it, who provides it, and what actually happens to your capital when you do.</p>
+    </header>
+
+    <div class="article-body">
+
+      <div class="callout">
+        <p>I've watched people LP, lose money, and not quite understand why. The fees looked fine. The pair seemed reasonable. Something in the math quietly worked against them and they couldn't point to what.</p>
+        <p>This is that explanation. Start from what liquidity actually is, go through how TradFi hides it and DeFi exposes it, and end with the full impermanent loss curve so you're not surprised when the numbers don't add up. No shortcuts.</p>
+      </div>
+
+      <h2>What liquidity actually means</h2>
+
+      <p>A market is liquid if you can buy or sell <strong>without moving the price</strong>. That's the whole definition. Everything else is downstream of it.</p>
+
+      <p>Think about depth. Drop a rock into a shallow puddle and everything moves. Drop it into the ocean and nothing measurable happens. A liquid market is the ocean. Your order gets absorbed without disturbing anything. A thin market is the puddle, and if your rock is big enough, you're making waves whether you want to or not.</p>
+
+      <p>The number you feel this through is <strong>slippage</strong>: the gap between the price you saw and the price you actually got. In a deep market a $10k order doesn't register. In a thin one that same $10k shifts the price by 1%, 3%, sometimes more. You overpay. The next person overpays a bit more because you moved the floor.</p>
+
+      <p>The other signal is the bid-ask spread: the gap between what buyers will pay and what sellers will accept. Liquid markets keep this tight, fractions of a percent. Illiquid ones let it widen. That spread isn't neutral. It's income for whoever is sitting on the other side of your order.</p>
+
+      <p>So who is that?</p>
+
+      <h2>Market makers and the problem of scale</h2>
+
+      <p>In traditional markets, that's <strong>market makers</strong>. They post a buy price and a sell price at the same time, earn the spread between them, and absorb whatever you throw at them. They're the counterparty to almost every trade a retail investor makes without knowing it.</p>
+
+      <p>This works fine at normal order sizes. It stops working when you're a pension fund trying to deploy $500 million into Apple stock. You can't do that on the public exchange quietly. The moment you start, the market sees the order, prices move up ahead of you, and by the time you're done you've paid more than you would have if you'd somehow executed the whole thing at the opening price. The difference is <strong>market impact</strong>, and for large institutional traders it's one of the most expensive problems they have.</p>
+
+      <p>TradFi's solution: dark pools.</p>
+
+      <h2>Dark pools: when liquidity goes private</h2>
+
+      <p>The name makes them sound like something the SEC should be investigating. The actual mechanism is boring, and makes complete sense once you understand the problem they're solving.</p>
+
+      <p>A dark pool is a private trading venue where large orders get matched off-exchange, away from the public order book. "Dark" means the orders are invisible until after execution. So a pension fund wanting to offload 2 million Apple shares doesn't post that intention on the NYSE for everyone to see. Instead it routes through a dark pool, finds a willing counterparty, and executes near the public market price, without the market knowing it was coming and repricing ahead of it.</p>
+
+      <p>Price is still discovered on the lit exchanges (NYSE, Nasdaq). Dark pools don't set prices. They free-ride on prices the public market already found. They exist because broadcasting a massive order before it executes is self-defeating. <strong>The opacity is the feature, not a bug.</strong> If your $500M sell order is visible, everyone frontruns it. Hiding it means you actually get the price you wanted.</p>
+
+      <p>So TradFi ended up with a split architecture: public markets for price discovery, private venues for execution at scale. Two layers doing different jobs.</p>
+
+      <p>DeFi threw all of that out.</p>
+
+      <h2>AMMs: the opposite philosophy</h2>
+
+      <p>Early DeFi had no market makers, no order books, no dark pools, no institutional infrastructure of any kind. Just wallets and smart contracts and the slightly absurd ambition of building financial markets from scratch on a blockchain.</p>
+
+      <p>The <strong>Automated Market Maker</strong> was the answer, and it's almost the exact inverse of how TradFi does it.</p>
+
+      <p>Instead of matching buyers with sellers, an AMM uses a <strong>pool of locked assets and a pricing formula</strong>. No counterparty needed. No order book. Prices come from the ratio of assets in the pool and update automatically with every trade. Everything is on-chain and public: pool balances, trade history, prices, all of it visible to anyone before and after every transaction.</p>
+
+      <p>Where TradFi solves liquidity by hiding large orders from the market, DeFi solves it by making the pool itself the market. And the pool only exists because someone put their assets into it.</p>
+
+      <p>That someone is the LP.</p>
+
+      <h2>What LPing is</h2>
+
+      <p>When you LP on Uniswap, you're not lending money to a protocol. You're <strong>becoming the market maker</strong>. Your capital is the pool. Every swap on that pair runs through your deposit.</p>
+
+      <p>You deposit two assets in roughly equal value, say ETH and USDC. The pool uses them to fill trades. Someone wants ETH? They buy it from your pool, pushing USDC in. Someone wants USDC? The other direction. The composition of your position shifts with every trade, and you earn a fee on each one. That fee is your payment for sitting on the other side of every transaction whether you want to be there or not.</p>
+
+      <p>The formula governing all of this is the <strong>constant product formula</strong>:</p>
+
+      <div class="formula-block">
+        <div class="formula">x · y = k</div>
+        <div class="formula-desc">Where x and y are the quantities of each token in the pool, and k is a constant that never changes. Every trade must preserve k.</div>
+      </div>
+
+      <p>Say a pool holds 100 ETH and 200,000 USDC. k = 20,000,000. Someone buys 1 ETH — they pull ETH out and push USDC in. For k to stay constant: 99 ETH × new USDC = 20,000,000, so they owe 202,020 USDC. They came in expecting $2,000 and paid $2,020. That $20 gap is slippage, and it scales with trade size — a bigger buy moves the ratio more, so the next buyer pays even more. Deep pools have more TVL to absorb the same trade with less ratio shift and less slippage. That's the direct connection between how much liquidity is in a pool and how usable it is for trading.</p>
+
+      <p>Every trade pays a fee, 0.05%, 0.3%, or 1% depending on the pool, split proportionally across all LPs by their share. That's the income side. The expense side is what we need to talk about.</p>
+
+      <h2>Impermanent loss: the full curve</h2>
+
+      <p>This is what most LP explainers skip, or explain wrong. It's also the thing that quietly eats your returns when you can't figure out where the money went.</p>
+
+      <p>When you deposit into a pool you're not parking assets. You're letting the constant product formula automatically rebalance your position as prices move. Arbitrageurs trade against the pool whenever the pool price drifts from the market price, which means the pool is always being pushed toward 50/50 value split at the current price. Your composition changes whether you want it to or not.</p>
+
+      <p><strong>Impermanent loss</strong> is the name for the cost of that rebalancing: the gap between what your LP position is worth versus what you'd have if you'd just held the same assets in a wallet.</p>
+
+      <p>Run through it. You deposit 1 ETH and $2,000 USDC when ETH is $2,000. Total value: $4,000.</p>
+
+      <p>ETH goes to $4,000. If you'd held: 1 ETH + $2,000 USDC = <strong>$6,000</strong>. But the pool doesn't know or care what price you entered at. Arbitrageurs have been buying your cheap ETH and selling USDC into the pool until the pool price matches the market. By the time ETH is at $4,000:</p>
+
+      <ol class="steps-list">
+        <li>
+          <span class="step-number">1</span>
+          <div class="step-content">Your ETH quantity dropped to <strong>0.707 ETH</strong> (down from 1). Arbitrageurs bought it cheaply from the pool.</div>
+        </li>
+        <li>
+          <span class="step-number">2</span>
+          <div class="step-content">Your USDC quantity rose to <strong>$2,828</strong> (up from $2,000), the USDC the arbitrageurs paid in.</div>
+        </li>
+        <li>
+          <span class="step-number">3</span>
+          <div class="step-content">Your LP value: 0.707 × $4,000 + $2,828 = <strong>$5,657</strong>.</div>
+        </li>
+        <li>
+          <span class="step-number">4</span>
+          <div class="step-content">Versus holding: <strong>$6,000</strong>. The difference, <strong>$343 or −5.7%</strong>, is impermanent loss.</div>
+        </li>
+      </ol>
+
+      <p>$343 less than holding, on an ETH move you correctly anticipated. That's the sting of it. The formula, for full-range positions, with r = new price / entry price:</p>
+
+      <div class="formula-block">
+        <div class="formula">IL = 2√r / (1 + r) − 1</div>
+        <div class="formula-desc">r is the price ratio of one asset relative to the other. The formula is symmetric: a 2× up and a 0.5× down produce identical IL.</div>
+      </div>
+
+      <p>The thing that gets people: <strong>IL is symmetric</strong>. ETH doubling and ETH halving produce exactly the same loss, ~5.7% each. Direction doesn't matter, only divergence does. The pool doesn't care which way the price moved. It's been rebalancing you toward 50/50 at whatever the current price is, and both outcomes leave you holding less total value than if you'd just sat on the assets.</p>
+
+      <p>How it scales:</p>
+
+      <div class="il-curve">
+        <div class="il-curve-header">Impermanent loss by price move (vs. holding)</div>
+        <div class="il-row">
+          <div class="il-price">1.25× / 0.8×</div>
+          <div class="il-bar-wrap"><div class="il-bar" style="width: 3%"></div></div>
+          <div class="il-pct">−0.6%</div>
+        </div>
+        <div class="il-row">
+          <div class="il-price">1.5× / 0.67×</div>
+          <div class="il-bar-wrap"><div class="il-bar" style="width: 10%"></div></div>
+          <div class="il-pct">−2.0%</div>
+        </div>
+        <div class="il-row">
+          <div class="il-price">2× / 0.5×</div>
+          <div class="il-bar-wrap"><div class="il-bar" style="width: 27%"></div></div>
+          <div class="il-pct">−5.7%</div>
+        </div>
+        <div class="il-row">
+          <div class="il-price">3× / 0.33×</div>
+          <div class="il-bar-wrap"><div class="il-bar" style="width: 53%"></div></div>
+          <div class="il-pct">−13.4%</div>
+        </div>
+        <div class="il-row">
+          <div class="il-price">5× / 0.2×</div>
+          <div class="il-bar-wrap"><div class="il-bar" style="width: 75%"></div></div>
+          <div class="il-pct">−25.5%</div>
+        </div>
+        <div class="il-row">
+          <div class="il-price">10× / 0.1×</div>
+          <div class="il-bar-wrap"><div class="il-bar" style="width: 100%"></div></div>
+          <div class="il-pct">−42.5%</div>
+        </div>
+      </div>
+
+      <p>The word "impermanent" is one of the worst naming decisions in crypto, which is saying something. It's technically true: if ETH comes back to exactly $2,000, the IL disappears. But if you exit at any other price, the loss is fully realised. Most people don't time their exit to their entry price. Most of the time, the loss is just a loss.</p>
+
+      <h2>Concentrated liquidity changes the math</h2>
+
+      <p>Uniswap V3 let LPs deploy capital within a specific price range instead of across the full curve. Set a range of $1,800 to $2,200 and your capital only works when ETH is in that band. Outside it, you earn nothing. Inside it, you earn fees at a much higher rate per dollar than a full-range position would.</p>
+
+      <p><strong>Concentration amplifies everything.</strong> More fees when in range. Steeper IL when price escapes.</p>
+
+      <p>If price leaves your range entirely, you end up 100% in one asset: all ETH if price dropped below your range, all USDC if it rose above. The pool converted you entirely into the losing side at the moment things went wrong. The IL isn't worse in percentage terms than V2, but it hits faster. A ±10% range hits max IL the moment price moves 10%.</p>
+
+      <p>Tight range is a bet on low volatility. Wide range is safer but you earn less per dollar. Getting that width right is most of the work in active V3 LP management.</p>
+
+      <h2>The other factors</h2>
+
+      <p>IL is the big one but not the only thing eating your returns.</p>
+
+      <p><strong>Fee tier selection.</strong> The same pair often has pools at 0.05%, 0.3%, and 1%. You choose which to provide to. Stablecoin pairs belong at 0.05% because volume is enormous, IL is basically zero, and any higher and you lose to LPs who undercut you. ETH/USDC lives at 0.3%. Volatile pairs and new tokens warrant 1% because the IL risk is real and if you're not being compensated for it at that rate, you're probably losing.</p>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-value">0.05%</div>
+          <div class="stat-label">Stablecoins, correlated assets (ETH/stETH)</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">0.3%</div>
+          <div class="stat-label">Standard pairs: ETH/USDC, most blue-chips</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">1%</div>
+          <div class="stat-label">High-volatility, exotic or low-liquidity pairs</div>
+        </div>
+      </div>
+
+      <p><strong>Volume/TVL ratio.</strong> The number that actually tells you whether a pool is worth entering. $10M TVL with $1M/day volume generates fees fast. $10M TVL with $100K/day volume generates them slowly, and slowly might not be fast enough to offset IL when price moves. This ratio, not APY, not TVL on its own, is the primary screen.</p>
+
+      <p><strong>Rebalancing cost.</strong> In V3, when price exits your range you need to withdraw, adjust, and redeposit to get earning again. Each time costs gas. On mainnet, if you're running a tight range on a volatile asset, you can rebalance your fees away before they compound into anything meaningful. Most active V3 LPs either use L2s where gas is negligible, or set ranges wide enough that they're not moving positions every few days.</p>
+
+      <p><strong>Smart contract risk.</strong> Your capital sits in a contract. Uniswap's contracts are about as battle-tested as anything in DeFi, but the risk isn't zero. Forks, newer protocols, pools with exotic token mechanics: higher risk, and worth knowing what you're in before you're in it.</p>
+
+      <h2>When LPing makes sense</h2>
+
+      <p>You're taking the other side of every trade. Sideways market, steady volume, low-volatility pair: fees accumulate and IL barely moves. You come out ahead. Trending market, volatile asset, directional price action: arbitrageurs strip your pool of whatever's appreciating and you end up concentrated in whatever's losing. The fees don't cover it.</p>
+
+      <p>The pairs that structurally work:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Pair type</th>
+            <th>IL profile</th>
+            <th>Fee potential</th>
+            <th>Verdict</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Stablecoin / stablecoin</td>
+            <td>Near zero. Prices don't diverge.</td>
+            <td>Low per trade, high volume</td>
+            <td>Structurally good. Race to the bottom on fees.</td>
+          </tr>
+          <tr>
+            <td>ETH / stETH or similar</td>
+            <td>Minimal. Assets move together.</td>
+            <td>Moderate</td>
+            <td>Strong. Correlation kills IL.</td>
+          </tr>
+          <tr>
+            <td>ETH / USDC</td>
+            <td>Moderate. ETH is volatile.</td>
+            <td>High. Deepest pool, most volume.</td>
+            <td>Works in sideways markets. Bleeds in bull runs.</td>
+          </tr>
+          <tr>
+            <td>Volatile token / ETH</td>
+            <td>High. Asymmetric directional risk.</td>
+            <td>High, but it has to be</td>
+            <td>Requires active management. Easy to get wrecked.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>The LP Yield Dashboard</h2>
+
+      <p>I built a tool that screens Uniswap V3 pools across Ethereum, Arbitrum, Base, Polygon, and Optimism. It ranks by volume/TVL ratio and streams per-chain as data comes in, so you're not staring at a loading spinner waiting for five chains to respond before seeing anything.</p>
+
+      <p>It won't tell you when to exit or whether a pair will stay correlated. What it does is cut through the noise of 500 pools and surface the ones actually generating fees relative to their depth. Start there, then apply the fee tier and pair volatility logic from above to filter further.</p>
+
+      <div class="tool-cta">
+        <a href="https://fren-labs.vercel.app/lp-yield" target="_blank" class="tool-btn-primary">Open the LP Yield Dashboard →</a>
+      </div>
+
+      <div class="end-cta">
+        <p>If you're curious how I think about products, systems, and trade-offs:</p>
+        <a href="../index.html" class="cta-main">See how I think →</a>
+      </div>
+
+      <div class="disclaimer">
+        This is not financial advice. LPing involves real risks including impermanent loss, smart contract vulnerabilities, and loss of principal. This article is for educational purposes. Understand the mechanics fully before deploying capital.
+      </div>
+
+    </div>
+
+    <footer class="article-footer">
+      <a href="../writing.html" class="back-link">← Back to writing</a>
+      <div class="share-links">
+        <a href="https://x.com/Fren_pm" target="_blank">X</a>
+        <a href="https://www.linkedin.com/in/sarthak-64ba12229/" target="_blank">LinkedIn</a>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
