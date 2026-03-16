@@ -612,7 +612,7 @@
 
       <p>Say a pool holds 100 ETH and 200,000 USDC. k = 20,000,000. Someone buys 1 ETH — they pull ETH out and push USDC in. For k to stay constant: 99 ETH × new USDC = 20,000,000, so they owe 202,020 USDC. They came in expecting $2,000 and paid $2,020. That $20 gap is slippage, and it scales with trade size — a bigger buy moves the ratio more, so the next buyer pays even more. Deep pools have more TVL to absorb the same trade with less ratio shift and less slippage. That's the direct connection between how much liquidity is in a pool and how usable it is for trading.</p>
 
-      <p>Every trade pays a fee, 0.05%, 0.3%, or 1% depending on the pool, split proportionally across all LPs by their share. That's the income side. The expense side is what we need to talk about.</p>
+      <p>Every trade pays a fee, 0.01%, 0.05%, 0.3%, or 1% depending on the pool, split proportionally across all LPs by their share. That's the income side. The expense side is what we need to talk about.</p>
 
       <h2>Impermanent loss: the full curve</h2>
 
@@ -706,12 +706,16 @@
 
       <p>IL is the big one but not the only thing eating your returns.</p>
 
-      <p><strong>Fee tier selection.</strong> The same pair often has pools at 0.05%, 0.3%, and 1%. You choose which to provide to. Stablecoin pairs belong at 0.05% because volume is enormous, IL is basically zero, and any higher and you lose to LPs who undercut you. ETH/USDC lives at 0.3%. Volatile pairs and new tokens warrant 1% because the IL risk is real and if you're not being compensated for it at that rate, you're probably losing.</p>
+      <p><strong>Fee tier selection.</strong> The same pair often has pools at 0.01%, 0.05%, 0.3%, and 1%. You choose which to provide to. Stablecoin/stablecoin pairs (USDC/USDT) belong at 0.01%. Correlated assets like ETH/stETH belong at 0.05% — volume is enormous, IL is basically zero, and any higher and you lose to LPs who undercut you. ETH/USDC lives at 0.3%. Volatile pairs and new tokens warrant 1% because the IL risk is real and if you're not being compensated for it at that rate, you're probably losing.</p>
 
       <div class="stat-row">
         <div class="stat">
+          <div class="stat-value">0.01%</div>
+          <div class="stat-label">Stablecoin/stablecoin pairs (USDC/USDT, etc.)</div>
+        </div>
+        <div class="stat">
           <div class="stat-value">0.05%</div>
-          <div class="stat-label">Stablecoins, correlated assets (ETH/stETH)</div>
+          <div class="stat-label">Correlated assets (ETH/stETH)</div>
         </div>
         <div class="stat">
           <div class="stat-value">0.3%</div>
