@@ -13,6 +13,9 @@ Personal site for Sarthak Guleria — product manager with 4+ years in fintech a
 
 Technical guides on DeFi mechanics, written for practitioners.
 
+- Building with Claude as a PM — https://sarthak-guleria.github.io/sarthak-guleria/writing/building-with-claude-as-a-pm.html
+  Building MVPs collapsed from weeks to days. The workflow, the four words you have to know first, and a worked example so the abstract gets concrete.
+
 - What the Heck is Liquidity? — https://sarthak-guleria.github.io/sarthak-guleria/writing/what-the-heck-is-liquidity.html
   From TradFi dark pools to Uniswap math: liquidity, AMMs, impermanent loss, and LP mechanics explained fully.
 

@@ -27,6 +27,10 @@ const PAGES = [
     slug: "what-the-heck-is-liquidity",
     title: "What the Heck is Liquidity?",
   },
+  {
+    slug: "building-with-claude-as-a-pm",
+    title: "Building with Claude as a PM",
+  },
 ];
 
 // ─── HTML template (matches site palette + fonts exactly) ─────────────────────

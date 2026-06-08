@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building with Claude as a PM | Sarthak Guleria</title>
+  <meta name="description" content="Building MVPs collapsed from weeks to days. Here is the workflow, the four words you have to know first, and a worked example so the abstract gets concrete." />
+  <link rel="canonical" href="https://sarthak-guleria.github.io/sarthak-guleria/writing/building-with-claude-as-a-pm.html" />
+  <meta property="og:title" content="Building with Claude as a PM" />
+  <meta property="og:description" content="Building MVPs collapsed from weeks to days. Here is the workflow, the four words you have to know first, and a worked example so the abstract gets concrete." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sarthak-guleria.github.io/sarthak-guleria/writing/building-with-claude-as-a-pm.html" />
+  <meta property="og:image" content="https://sarthak-guleria.github.io/sarthak-guleria/og-images/building-with-claude-as-a-pm.png" />
+  <meta property="article:author" content="Sarthak Guleria" />
+  <meta property="article:published_time" content="2026-06-06" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:creator" content="@Fren_pm" />
+  <meta name="twitter:title" content="Building with Claude as a PM" />
+  <meta name="twitter:description" content="Building MVPs collapsed from weeks to days. Here is the workflow, the four words you have to know first, and a worked example so the abstract gets concrete." />
+  <meta name="twitter:image" content="https://sarthak-guleria.github.io/sarthak-guleria/og-images/building-with-claude-as-a-pm.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Building with Claude as a PM",
+    "description": "Building MVPs collapsed from weeks to days. Here is the workflow, the four words you have to know first, and a worked example so the abstract gets concrete.",
+    "datePublished": "2026-06-06",
+    "author": { "@type": "Person", "name": "Sarthak Guleria", "url": "https://sarthak-guleria.github.io/sarthak-guleria/" },
+    "url": "https://sarthak-guleria.github.io/sarthak-guleria/writing/building-with-claude-as-a-pm.html"
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23faf8f5' width='100' height='100' rx='12'/><text x='50' y='72' font-family='Brush Script MT, cursive' font-size='58' font-style='italic' fill='%231a1a1a' text-anchor='middle'>S</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf8f5;
+      --bg-subtle: #f5f2ed;
+      --ink: #1a1a1a;
+      --ink-light: #4a4a4a;
+      --ink-faded: #888;
+      --accent: #2c5530;
+      --accent-light: #e8f0e8;
+      --border: #e5e2dd;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      line-height: 1.75;
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    nav {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink-faded);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+
+    nav a:hover { color: var(--ink); }
+    nav .home { color: var(--ink); font-weight: 500; }
+    nav .nav-links { display: flex; gap: 20px; align-items: center; }
+
+    /* Article container */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 72px 32px 120px;
+    }
+
+    /* Article header */
+    .article-header {
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .article-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .article-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime::before {
+      content: '·';
+      margin-right: 12px;
+      color: var(--border);
+    }
+
+    h1.article-title {
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .article-subtitle {
+      font-size: 18px;
+      color: var(--ink-faded);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* Article body */
+    .article-body > * + * {
+      margin-top: 28px;
+    }
+
+    .article-body h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      margin-top: 52px;
+      margin-bottom: -12px;
+    }
+
+    .article-body h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+      margin-top: 36px;
+      margin-bottom: -14px;
+    }
+
+    .article-body p {
+      color: var(--ink-light);
+    }
+
+    .article-body strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .article-body pre {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 13px;
+      color: var(--ink);
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .article-body code {
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 0.88em;
+      background: var(--bg-subtle);
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: var(--ink);
+    }
+
+    .article-body pre code {
+      background: transparent;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* Callout / intro block */
+    .callout {
+      background: var(--bg-subtle);
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .callout p {
+      font-size: 16px;
+      color: var(--ink-light);
+      margin: 0;
+    }
+
+    .callout p + p {
+      margin-top: 12px;
+    }
+
+    /* Steps list */
+    .steps-list {
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .steps-list li {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      counter-increment: steps;
+    }
+
+    .steps-list li:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .step-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+      font-size: 16px;
+      color: var(--ink-light);
+      line-height: 1.65;
+    }
+
+    /* Stat row */
+    .stat-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+    }
+
+    /* Figures / screenshots */
+    figure {
+      margin: 36px 0;
+    }
+
+    figure img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      display: block;
+    }
+
+    figcaption {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* Diagram wrappers */
+    .diagram-scroll {
+      margin: 36px 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .diagram-scroll svg {
+      display: block;
+      width: 100%;
+      min-width: 700px;
+      height: auto;
+    }
+
+    @media (max-width: 600px) {
+      .diagram-scroll {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding: 0 20px;
+      }
+    }
+
+    /* Key takeaways */
+    .takeaways {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 32px;
+    }
+
+    .takeaways h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 16px;
+    }
+
+    .takeaways ul {
+      list-style: none;
+    }
+
+    .takeaways li {
+      font-size: 16px;
+      color: var(--ink-light);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .takeaways li:last-child { border-bottom: none; }
+
+    .takeaways li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    /* End CTA */
+    .end-cta {
+      margin-top: 56px;
+      padding: 36px 40px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .end-cta p {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--ink-faded);
+      margin-bottom: 20px;
+    }
+
+    .end-cta a.cta-main {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 28px;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .end-cta a.cta-main:hover { background: var(--ink-light); }
+
+    /* Disclaimer */
+    .disclaimer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      line-height: 1.6;
+    }
+
+    /* Back / footer */
+    .article-footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
+    .back-link {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: var(--ink); }
+
+    .share-links { display: flex; gap: 16px; }
+    .share-links a {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .share-links a:hover { color: var(--ink); }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .container { padding: 48px 20px 80px; }
+      nav { padding: 20px; }
+      h1.article-title { font-size: 26px; }
+      .stat-row { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .article-footer { flex-direction: column; gap: 16px; }
+      .end-cta { padding: 28px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="home">Sarthak Guleria</a>
+    <div class="nav-links">
+      <a href="../writing.html">← Writing</a>
+      <a href="../index.html">Home</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="article-tag">Tooling</span>
+        <span class="article-date">June 2026</span>
+        <span class="article-readtime">15 min read</span>
+      </div>
+      <h1 class="article-title">Building with Claude as a PM</h1>
+      <p class="article-subtitle">How the product cycle collapsed, the four words you need to know first, and a worked example so the abstract gets concrete.</p>
+    </header>
+
+    <!-- Body -->
+    <div class="article-body">
+
+      <!-- Intro -->
+      <div class="callout">
+        <p>A year ago, building a side project meant writing a PRD, annoying an engineer friend, making a Figma you never looked at again, and eventually abandoning the thing.</p>
+        <p>Today I can usually get a working MVP over a weekend.</p>
+        <p>This piece is the workflow I use, the four words you need to know before you start, and a worked example so the abstract gets concrete.</p>
+      </div>
+
+      <h2>What changed</h2>
+
+      <p>PRDs existed because engineers were expensive, scarce, and on a different timezone of context. The doc carried the context for them. Onboarding new team members onto a feature was a written exercise: user stories, acceptance criteria, edge cases, the things that could go wrong, the things that should not happen. All of that was the cost of getting other humans aligned on a shared mental model of the thing you wanted built.</p>
+
+      <p>For MVPs and personal tools, the engineer is increasingly Claude. In practice, a lot of the onboarding context now lives in a <code>CLAUDE.md</code>. The kickoff is a chat session. Both cost minutes, not days. Acceptance criteria become test cases written before the code. Edge cases become questions you ask the model while you co-work. What used to require a document negotiated across a Slack thread now happens inside a single conversation.</p>
+
+      <p>This collapses the product cycle. The cycle that used to be idea, PRD, kickoff, sprint, demo, revise, ship has flattened into idea, spec, plan, MVP. Sometimes in a single afternoon. The intermediate artifacts still exist but they are produced inline, by the same person, in the same session, without the handoffs that used to dominate the calendar.</p>
+
+      <p>Five years ago the question was "can we build this?" Today the answer is almost always yes. <strong>The real question is whether the thing deserves to exist at all.</strong> The PM's job used to be specifying well enough to get engineering started. Now it is deciding well enough that the build is worth doing.</p>
+
+      <p>That shift only pays off if you have a workflow for it. Here is mine.</p>
+
+      <h2>The workflow</h2>
+
+      <p>The workflow has nine stages. It is not a one-way pipeline. The Plan and Refine stages form a loop, and that loop is where most of the actual product thinking happens. Everything before the loop is research. Everything after the loop is execution.</p>
+
+      <p>The first three stages are about narrowing scope. The middle three are about turning scope into something a machine can act on. The last three are about turning that into a thing you can use.</p>
+
+      <p>The road bar below is the shape. The numbered glossary that follows it is what each stop on the road actually means.</p>
+
+      <div class="diagram-scroll">
+      <svg viewBox="0 0 1100 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 9-stage build workflow: Decide, Research, Define features, Plan, Refine, CLAUDE.md, Claude Code, Design, Claude Code, with a Plan-Refine iteration loop">
+        <defs>
+          <marker id="arrow-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#2c5530"/>
+          </marker>
+        </defs>
+        <line x1="60" y1="120" x2="1040" y2="120" stroke="#e5e2dd" stroke-width="3"/>
+        <g font-family="Inter, sans-serif" text-anchor="middle">
+          <circle cx="60" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="60" y="125" font-size="14" font-weight="600" fill="#2c5530">1</text>
+          <text x="60" y="170" font-size="12" fill="#1a1a1a">Decide</text>
+          <circle cx="182.5" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="182.5" y="125" font-size="14" font-weight="600" fill="#2c5530">2</text>
+          <text x="182.5" y="170" font-size="12" fill="#1a1a1a">Research</text>
+          <circle cx="305" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="305" y="125" font-size="14" font-weight="600" fill="#2c5530">3</text>
+          <text x="305" y="170" font-size="12" fill="#1a1a1a">Define features</text>
+          <circle cx="427.5" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="427.5" y="125" font-size="14" font-weight="600" fill="#2c5530">4</text>
+          <text x="427.5" y="170" font-size="12" fill="#1a1a1a">Plan</text>
+          <circle cx="550" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="550" y="125" font-size="14" font-weight="600" fill="#2c5530">5</text>
+          <text x="550" y="170" font-size="12" fill="#1a1a1a">Refine</text>
+          <circle cx="672.5" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="672.5" y="125" font-size="14" font-weight="600" fill="#2c5530">6</text>
+          <text x="672.5" y="170" font-size="12" fill="#1a1a1a">CLAUDE.md</text>
+          <circle cx="795" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="795" y="125" font-size="14" font-weight="600" fill="#2c5530">7</text>
+          <text x="795" y="170" font-size="12" fill="#1a1a1a">Claude Code</text>
+          <circle cx="917.5" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="917.5" y="125" font-size="14" font-weight="600" fill="#2c5530">8</text>
+          <text x="917.5" y="170" font-size="12" fill="#1a1a1a">Design</text>
+          <circle cx="1040" cy="120" r="22" fill="#e8f0e8" stroke="#2c5530" stroke-width="1.5"/>
+          <text x="1040" y="125" font-size="14" font-weight="600" fill="#2c5530">9</text>
+          <text x="1040" y="170" font-size="12" fill="#1a1a1a">Claude Code</text>
+        </g>
+        <path d="M 550 95 Q 488.75 30 427.5 95" fill="none" stroke="#2c5530" stroke-width="1.5" marker-end="url(#arrow-loop)"/>
+        <text x="488.75" y="50" font-family="Inter, sans-serif" font-size="11" fill="#2c5530" text-anchor="middle" font-style="italic">refine loop</text>
+      </svg>
+      </div>
+
+      <ol class="steps-list">
+        <li>
+          <span class="step-number">1</span>
+          <div class="step-content"><strong>Decide.</strong> Pick the single problem you are solving. Resist the urge to scope creep. Most personal tools die because they tried to be a platform.</div>
+        </li>
+        <li>
+          <span class="step-number">2</span>
+          <div class="step-content"><strong>Research.</strong> Look at what exists. Most of the time you find a tool that does 70% of what you want and is missing the 30% you actually care about. That 30% is the project.</div>
+        </li>
+        <li>
+          <span class="step-number">3</span>
+          <div class="step-content"><strong>Define features.</strong> A flat list. No prioritization yet, no sketches. Just every capability the tool needs to have to be useful to you on day one.</div>
+        </li>
+        <li>
+          <span class="step-number">4</span>
+          <div class="step-content"><strong>Plan.</strong> Take the spec into a planning skill. Get back an executable plan. More on what a skill is below.</div>
+        </li>
+        <li>
+          <span class="step-number">5</span>
+          <div class="step-content"><strong>Refine.</strong> Read the plan. Find the parts where you cannot picture the screen, the interaction, or the data flow. Push those back into the spec, edit, replan. Two or three iterations through this loop is normal.</div>
+        </li>
+        <li>
+          <span class="step-number">6</span>
+          <div class="step-content"><strong>CLAUDE.md.</strong> Write the AI onboarding doc. File structure. Constants. Conventions. The single document that carries the project context into every future session.</div>
+        </li>
+        <li>
+          <span class="step-number">7</span>
+          <div class="step-content"><strong>Claude Code.</strong> Execute the plan task by task. This is the part that used to be the multi-week sprint.</div>
+        </li>
+        <li>
+          <span class="step-number">8</span>
+          <div class="step-content"><strong>Design.</strong> UI mockups in Claude.ai using artifacts. A conversational design loop where the output is a working component you can paste into the codebase.</div>
+        </li>
+        <li>
+          <span class="step-number">9</span>
+          <div class="step-content"><strong>Claude Code.</strong> Final integration pass. Pull the designed components into the implementation. Wire them to data. Ship.</div>
+        </li>
+      </ol>
+
+      <p>The stages are in order but the time spent per stage is not even. Most of the calendar time goes into Plan and Refine. Most of the wall-clock time goes into Claude Code.</p>
+
+      <h2>The concepts that matter</h2>
+
+      <p>Claude on its own gives you a smart writer. The four concepts below are what turn it into a workflow engine. Most people stop at the first and never get to the others. Learning all four is the difference between "I had a chat" and "I shipped a thing".</p>
+
+      <p>The diagram shows how they fit together. MCP is the foundation everything else sits on. Connectors are the actual bridges to the tools you already use. Plugins are containers that bundle skills, commands, and connectors into installable packages. Skills are the procedural workflows Claude executes when you ask it to do something specific.</p>
+
+      <p>If you only learn one of the four, learn <strong>skills</strong>. They are what turn an open-ended chat into a process with a known beginning, middle, and end.</p>
+
+      <div class="diagram-scroll">
+      <svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Claude toolchain layered: Skills are packaged inside Plugins, Plugins may include Connectors, Connectors talk via MCP">
+        <defs>
+          <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 0 L 5 10 z" fill="#888"/>
+          </marker>
+        </defs>
+        <g font-family="Inter, sans-serif">
+          <rect x="20" y="20" width="760" height="80" rx="8" fill="#f5f2ed" stroke="#e5e2dd"/>
+          <rect x="40" y="40" width="120" height="36" rx="4" fill="#2c5530"/>
+          <text x="100" y="63" font-size="13" font-weight="600" fill="#faf8f5" text-anchor="middle">SKILLS</text>
+          <text x="180" y="63" font-size="13" fill="#888">what Claude actually runs</text>
+          <text x="40" y="92" font-size="11" fill="#4a4a4a">planning · TDD · review · brainstorming · writing-skills</text>
+          <line x1="400" y1="105" x2="400" y2="135" stroke="#888" stroke-width="1.5" marker-end="url(#arrow-down)"/>
+          <text x="412" y="125" font-size="11" fill="#888" font-style="italic">packaged inside</text>
+          <rect x="20" y="140" width="760" height="80" rx="8" fill="#f5f2ed" stroke="#e5e2dd"/>
+          <rect x="40" y="160" width="120" height="36" rx="4" fill="#2c5530"/>
+          <text x="100" y="183" font-size="13" font-weight="600" fill="#faf8f5" text-anchor="middle">PLUGINS</text>
+          <text x="180" y="183" font-size="13" fill="#888">installable bundles</text>
+          <text x="40" y="212" font-size="11" fill="#4a4a4a">skills · slash commands · hooks · MCP servers</text>
+          <line x1="400" y1="225" x2="400" y2="255" stroke="#888" stroke-width="1.5" marker-end="url(#arrow-down)"/>
+          <text x="412" y="245" font-size="11" fill="#888" font-style="italic">may include</text>
+          <rect x="20" y="260" width="760" height="80" rx="8" fill="#f5f2ed" stroke="#e5e2dd"/>
+          <rect x="40" y="280" width="120" height="36" rx="4" fill="#2c5530"/>
+          <text x="100" y="303" font-size="13" font-weight="600" fill="#faf8f5" text-anchor="middle">CONNECTORS</text>
+          <text x="180" y="303" font-size="13" fill="#888">handshakes to your tools</text>
+          <text x="40" y="332" font-size="11" fill="#4a4a4a">Linear · Notion · GitHub · Slack · Calendar · Figma · Drive</text>
+          <line x1="400" y1="345" x2="400" y2="375" stroke="#888" stroke-width="1.5" marker-end="url(#arrow-down)"/>
+          <text x="412" y="365" font-size="11" fill="#888" font-style="italic">talk via</text>
+          <rect x="20" y="380" width="760" height="80" rx="8" fill="#f5f2ed" stroke="#e5e2dd"/>
+          <rect x="40" y="400" width="120" height="36" rx="4" fill="#2c5530"/>
+          <text x="100" y="423" font-size="13" font-weight="600" fill="#faf8f5" text-anchor="middle">MCP</text>
+          <text x="180" y="423" font-size="13" fill="#888">Model Context Protocol · the language underneath</text>
+          <text x="40" y="452" font-size="11" fill="#4a4a4a">open standard · works across Claude apps, terminal, editor</text>
+        </g>
+      </svg>
+      </div>
+
+      <h3>MCP</h3>
+
+      <p>MCP stands for Model Context Protocol. In plain English: a common language that lets any AI app talk to any external tool without each app having to re-implement the integration from scratch.</p>
+
+      <p>Before MCP, every AI product that wanted to read your Notion pages had to build its own Notion integration. The same for every product that wanted to read your Linear issues, your Google Drive files, your GitHub PRs. The integrations multiplied: <em>n</em> AI apps times <em>m</em> tools, all of it bespoke. Conceptually, MCP moves the world closer to <em>n + m</em> instead of <em>n × m</em>. One protocol, one server per tool, every compatible client gets the connection for free.</p>
+
+      <p>The shortest analogy is the USB-C of AI integrations. Same plug, different devices. Once a tool exposes an MCP server, any AI app that speaks MCP can use it.</p>
+
+      <p>Why a PM should care: the connector you set up once works across every Claude surface, and increasingly across other AI tools that support the protocol too. The integration work you do today does not get thrown out the next time you switch tools.</p>
+
+      <h3>Connectors</h3>
+
+      <p>A connector is the actual bridge between Claude and a specific external tool. It is the thing you click "Connect" on, the thing that asks you to authenticate, the thing that shows up in the chat as an available capability after you grant access.</p>
+
+      <p>The list of connectors most people end up using is short and obvious. Linear for issues and projects. Notion for pages and databases. GitHub for PRs and code. Slack for messages and channels. Google Drive for files. Google Calendar for events. Figma for design files. Each one lets Claude read from and write to that tool with your permission.</p>
+
+      <p>The "with your permission" part matters. Connectors do not give Claude blanket access. You authenticate, you scope, you revoke. If you connect Notion and give Claude access to one workspace, that is the only workspace it sees. Pulling the plug is one click in your account settings.</p>
+
+      <p>Worth saying once: increasingly, connectors are being built on MCP-style interfaces, which is why portability is improving. The Linear connector you authorize for Claude is the same shape of integration that a different MCP-compatible client could use against the same Linear instance.</p>
+
+      <h3>Plugins</h3>
+
+      <p>A plugin is an installable bundle. The same way a browser extension packages a set of features into a single install, a plugin packages a set of capabilities into a single install for Claude Code.</p>
+
+      <p>What a plugin can contain: skills, slash commands (shortcuts you trigger with a leading slash), hooks (automated behaviors that fire on specific events, like "run the linter every time a file is saved"), and MCP servers (custom connectors for your team's internal tools that are not in the standard catalog).</p>
+
+      <p>The app-store analogy works here, with one caveat. Today, plugins are most relevant inside Claude Code workflows, meaning the terminal-based agent that runs on your machine. The chat-based Claude.ai uses connectors and skills more directly, without the plugin wrapper.</p>
+
+      <p>For a PM building personal tools, plugins matter less than skills do, at least at first. Most of what you need is already available as a skill. You graduate into plugins when you have a workflow you want to install once and reuse across projects.</p>
+
+      <h3>Skills</h3>
+
+      <p>The most important word of the four. A skill is a procedural workflow Claude can call on. When you invoke a skill, you are not just chatting, you are running a process with a known input, a known output, and a defined sequence of steps in between.</p>
+
+      <p>Examples by name from real use. The <strong>planning skills</strong> I use typically turn a spec into a detailed executable plan with checkbox tasks. The <strong>TDD skill</strong> writes tests before code, and refuses to write code until the tests fail. The <strong>brainstorming skill</strong> refuses to start implementing until requirements are clarified. The <strong>code-review skill</strong> reads a diff against the codebase conventions and returns structured feedback. Each one has rules, each one runs the rules consistently.</p>
+
+      <p>Why this matters: a skill is a constraint. Constraints are what make Claude reliable. An open chat will produce whatever feels plausible. A skill will produce exactly the artifact the skill is designed to produce, every time. The first time you run the planning skill it feels like overhead. By the fifth time you run it, you stop writing the boilerplate yourself because you trust the skill to do it.</p>
+
+      <p>Most people don't actually need to know the terminology. <strong>But if you're spending hours inside Claude, these four concepts are the difference between having conversations and building systems.</strong></p>
+
+      <h2>Why a finance dashboard</h2>
+
+      <p>Everyone wants one and most people give up halfway. The default is an Excel sheet, which is fine until it is not. The spreadsheet ceiling is real. No live data layer that survives an exchange rate change. No math layer that holds up once the formulas multiply across tabs. No place to put a tax engine that changes every April. A dashboard fixes all of that, but the cost of building one used to be a side project that ate three weekends and shipped nothing.</p>
+
+      <p>The dashboard itself isn't particularly interesting. You can swap it for a reading tracker, a CRM, a deal tracker, or whatever thing you've been procrastinating on building. <strong>The interesting bit is the process.</strong></p>
+
+      <h2>The build, stage by stage</h2>
+
+      <h3>1. Decide</h3>
+
+      <p>What I picked: a single HTML file, INR-only, with an Indian-context tax engine baked in. 44AD presumptive scheme support, FY 2026-27 slabs, advance tax tracking by quarter, crypto capital gains computed at 30% plus 4% cess under Section 115BBH. Tax rules change frequently and should always be independently verified. Runs from a double-click on <code>file://</code>. No auth. No hosting. No build step.</p>
+
+      <p>The do-not-want list was longer than the want list. No multi-currency. No setup wizard. No auto-sync to the exchange. No login. No cloud. No parallel maintenance of a personal version and a shareable version. Saying both lists out loud killed about three weekends of future scope creep before it could start.</p>
+
+      <h3>2. Research</h3>
+
+      <p>What existed: Cred, INDmoney, the various Money Manager apps, the open-source dashboards on GitHub. All of them did the easy 70%. None of them did the part that mattered to me.</p>
+
+      <p>The missing 30% was specific. FIRC tracking for foreign remittances, because every freelancer billing abroad needs a place to log them. 44AD presumptive scheme support, because the new regime defaults to it for digital receipts. ETH wallet balance integration, because the exchange view is not the wallet view. Crypto CGT with the 115BBH no-loss-setoff rule baked in, because that one rule changes the answer. That 30% I named earlier? This is what it looks like in practice.</p>
+
+      <h3>3. Define features</h3>
+
+      <p>A flat list, no prioritization. Twelve tabs at a high level: Overview, Cash Flow, Portfolio, Projections, In-Flight, Transactions, Goals, FIRC, Taxes, Invoices, Markets, Settings. Each one is a single responsibility. No tab tries to be two things.</p>
+
+      <p>Writing the list flat means you see the shape of the product before you start arguing about what is v1 versus v2. The argument comes later, in the refine loop. Trying to prioritize while you are still listing is how you end up with a feature you forgot.</p>
+
+      <h3>4. Plan</h3>
+
+      <p>Wrote the design spec. Goals, non-goals, file layout, the shape of the <code>CONFIG</code> block. Plain markdown. Ran the planning skill on top of the spec. Output was a <strong>1,200-line plan</strong> with checkbox tasks. Each task discrete. Each step verifiable. Each one carrying its own pre-flight check.</p>
+
+      <p>A representative task looked like this:</p>
+
+      <pre><code>test -f /Users/sid/Desktop/Finance/Finance_Dashboard.html \
+  &amp;&amp; echo "source OK" || echo "source MISSING"
+Expected output: source OK</code></pre>
+
+      <p>That level of concreteness is what makes the plan runnable. The spec is the artifact a PM produces. The plan turns the spec into something a machine can run task by task without re-deciding the architecture at every step.</p>
+
+      <h3>5. Refine</h3>
+
+      <p>Three iterations on the spec before I locked it. The first iteration was too generous on scope, the kind of pass where you say yes to every nice-to-have because saying no feels premature. The second iteration over-corrected and dropped real features, the kind of pass where you cut so hard you remove the thing you actually wanted. The third iteration was the one that survived.</p>
+
+      <p>Refining is mostly subtraction. <strong>Every iteration killed something.</strong> By the time the plan was locked, the cuts list was longer than the keep list.</p>
+
+      <h3>6. CLAUDE.md</h3>
+
+      <p>The AI onboarding doc. File structure, key constants, the localStorage schema, the common patterns (<code>setText</code>, <code>INR</code>, <code>mkChart</code>, <code>calcIDFCInterest</code>), the explicit "do not do X" rules. When I open a fresh session six months from now, this is what gets me back into the project in five minutes instead of an hour.</p>
+
+      <p>A small excerpt to give the shape of it:</p>
+
+      <pre><code>### Live rates
+
+LIVE object holds current prices. fetchLiveRates() runs on
+load and every 5 minutes.
+
+USD/INR sources (tried in order, first success wins):
+1. cdn.jsdelivr.net (permissive CORS, works from file://)
+2. api.frankfurter.app
+3. api.exchangerate-api.com
+
+Crypto sources (tried in order):
+1. Binance
+2. CoinGecko
+3. CoinCap</code></pre>
+
+      <p>Notice what is in there: the order things are tried, the constraint that drove the order (CORS), and the named alternates. Nothing about why the dashboard exists, nothing about my opinions. Pure operating context for the next agent that touches the file.</p>
+
+      <h3>7. Claude Code</h3>
+
+      <p>Ran the plan task by task with the <strong>subagent-driven-development skill</strong>. Each task ran in its own isolated context. Came back with a diff. I approved or rejected. Because each task was scoped tightly by the plan, no single subagent had to understand the whole file.</p>
+
+      <p>The whole 1,200-line plan ran over maybe six hours of clock time, with about ninety minutes of my attention spread across that window. The rest was waiting for diffs and approving them. The model worked, I checked, the next task ran. It is closer to managing a small team of junior engineers than to writing code yourself.</p>
+
+      <h3>8. Design</h3>
+
+      <p>UI mockups in <strong>Claude.ai using artifacts</strong>. I described the screen I wanted, Claude generated a rendered preview I could iterate on inside the chat. For personal tools, I found this faster than opening Figma because the output was already HTML and CSS I could paste directly.</p>
+
+      <p>The artifact loop is conversational. "Make the KPI strip tighter." "Swap the chart for a sparkline." "Add a privacy toggle that blurs the numbers when I screen-share." Each turn renders the new version next to the old one. The feedback loop is seconds, not days. What you end up with is HTML and CSS you can paste straight into the codebase, no translation step from mockup to code required.</p>
+
+      <h3>9. Claude Code (again)</h3>
+
+      <p>Final integration. The artifacts from stage 8 came back to the terminal. Claude Code wired them into the page-init functions, the chart registry, and the data layer. A handful of layout adjustments, one chart axis fix, done. The seam between design and code, which used to be a hand-off, is now another stage of the same conversation.</p>
+
+      <h2>Inside the dashboard</h2>
+
+      <p>Twelve tabs total. Four are the most useful to show. The rest you can see in the repo.</p>
+
+      <p>Each of the four below is a hero tab in its own right, in the sense that it is doing something the default tools (banking app, exchange app, accountant's spreadsheet) do not do for you. The rest of the tabs are supporting infrastructure.</p>
+
+      <figure>
+        <img src="images/dashboard-overview.png" alt="The Overview tab: net-worth KPI, allocation pie chart, live FX and crypto banner, and inflation row." />
+        <figcaption>Overview tab. Net worth, allocation, live rates, inflation banner.</figcaption>
+      </figure>
+
+      <p>Top of the page is the net-worth KPI with a 30-day change indicator. Below that, an allocation pie split by asset class. Below that, a live banner of USD/INR, ETH, SOL, plus India and global CPI. The banner refreshes every 5 minutes.</p>
+
+      <p>The thing that makes it useful, rather than just decorative, is that the pie reads from the same data the projection model uses. So the numbers reconcile across tabs. If the Overview says net worth is X, the Projections tab starts its month-one balance at the same X. No two-source-of-truth bugs.</p>
+
+      <figure>
+        <img src="images/dashboard-cashflow.png" alt="The Cash Flow tab: total income, total expenses and net saved KPI cards above a monthly chart showing income, expenses and net flow across the quarter." />
+        <figcaption>Cash Flow tab. Three KPI cards, monthly chart, income vs expenses.</figcaption>
+      </figure>
+
+      <p>Three KPI cards sit at the top: total income, total expenses, net saved across the visible window. Income is salary plus bank interest plus staking, all already netted out in the underlying model. Expenses are summed live from the Transactions tab, categorised, with manual entries layered on top of the imported ones.</p>
+
+      <p>The chart below is the gut-check view. Net flow as a line, monthly income and expense as bars. The window defaults to the current quarter and can be widened to the full projection horizon. This is the tab I open when I am trying to decide whether last month's burn was real or just lumpy timing.</p>
+
+      <figure>
+        <img src="images/dashboard-transactions.png" alt="The Transactions tab: an Add Transaction form at the top with date, description, category, type, account and amount fields, and a filterable transaction list below." />
+        <figcaption>Transactions tab. The data layer the rest of the dashboard reads from.</figcaption>
+      </figure>
+
+      <p>At the top, an Add Transaction form: date, description, category, type (income or expense), account, amount. Below it the full transaction list with All / Monthly / Weekly views, free-text search, and type and category filters. Categories you override stick. Manual entries stay across sessions. The cash flow chart, the projection, the FIRE crossover, all read from this table.</p>
+
+      <p>You do not fill this tab by hand. <strong>The fastest way to get started is to co-work it: open the dashboard in a Claude session, drop a bank statement PDF or CSV into the chat, and ask Claude to populate the Transactions tab from it.</strong> The dashboard adapts to whatever data you bring. Same for crypto exchange statements, same for invoice exports. Whatever shape your data lives in, co-work is the import layer.</p>
+
+      <figure>
+        <img src="images/dashboard-markets.png" alt="The Markets tab: a TradingView ticker tape showing ETHUSDT, USDINR and NIFTY at the top, with a full Bitcoin chart on Binance below." />
+        <figcaption>Markets tab. Embedded TradingView widgets, no API key, no auth.</figcaption>
+      </figure>
+
+      <p>Embedded TradingView widgets across the page. Ticker tape at the top spans crypto, FX and an Indian index in one row, which is the actual asset mix anyone tracking INR-denominated net worth cares about. The full chart below carries technical indicators, multiple timeframes, drawing tools. The watchlist symbols and the initial chart symbol can be edited inside the app and persist in <code>localStorage</code>.</p>
+
+      <p>This exists because half the time I open a finance app I actually just want to glance at price. Putting it in the same file as the net worth view means I do not switch context to do the easy thing.</p>
+
+      <p>The other eight tabs are Portfolio (allocation breakdown across banks, crypto and wallets), Projections (13-month forward simulation with the FIRE crossover line), In-Flight (crypto-to-INR offramps in transit), Goals, FIRC (foreign remittance certificate log with attached PDFs), Taxes (India FY 2026-27, 44AD presumptive, advance tax, crypto CGT), Invoices, and Settings (every personal value editable in the UI, persisted to localStorage). All in the repo.</p>
+
+      <h2>The bit nobody talks about: maintenance</h2>
+
+      <p>The building was the easy part. Anybody with Claude and a weekend can produce something that works on a Sunday. The harder question is what happens on the third Monday after. That is the question almost no write-up on the topic answers, and it is the one that decides whether a personal tool is real or just a demo you forget about.</p>
+
+      <p>Three concrete failure modes show up over a few months.</p>
+
+      <p><strong>Live data sources break or change.</strong> An API gets deprecated. A schema changes. A free tier suddenly requires an account. The dashboard silently breaks. Multi-source fallback chains buy time, they do not solve this forever. A line on a chart goes flat and you have a week before you notice.</p>
+
+      <p><strong>Tax rules change every year.</strong> The FY 2026-27 slabs in this dashboard will be wrong by April. Hardcoded constants rot. Anything that touches real-world policy is a maintenance commitment, not a one-time write. Same goes for any tool wired to compliance rules, pricing schedules, or contract terms.</p>
+
+      <p><strong>You forget how it works.</strong> Six months later you open the file to fix a number and cannot remember what you decided about the projection model. The CONFIG block helps. A <code>CLAUDE.md</code> in the repo helps more, because it gives the AI you bring back in the future the context you needed.</p>
+
+      <p>This is where the four concepts from earlier earn their keep. <strong>Skills, connectors, and MCP are where maintenance gets tractable for a non-engineer.</strong> A connector means I do not have to remember the shape of Linear's API. The skill means I do not have to remember the planning format. MCP means the same connector keeps working as I move between Claude in the terminal, Claude in my editor, and Claude in the browser.</p>
+
+      <p>I open the dashboard once a month, edit a few CONFIG values, ask Claude to fix anything that broke. Sometimes that is a five-minute conversation. Sometimes it is an hour. <strong>It is never a weekend. That is the only honest definition of maintainable for a personal tool.</strong></p>
+
+      <h2>What I'd tell a PM trying this</h2>
+
+      <!-- Takeaways -->
+      <div class="takeaways">
+        <h3>What mattered</h3>
+        <ul>
+          <li>The real question now is whether the thing deserves to exist. Building it is the cheap part.</li>
+          <li>Collapse the cycle. A <code>CLAUDE.md</code> replaces a 12-page PRD. A chat replaces a kickoff.</li>
+          <li>Learn the four concepts. MCP, connector, plugin, skill. The vocabulary is the toolchain.</li>
+          <li>Use skills. They turn an open chat into a process with a known output.</li>
+          <li>Don't vibe-code the entire thing and disappear. The fastest way to end up with an unmaintainable mess is to let Claude make every decision for you.</li>
+          <li>Plan for maintenance from day one. The build is one weekend. The upkeep is forever.</li>
+        </ul>
+      </div>
+
+      <!-- End CTA -->
+      <div class="end-cta">
+        <p>Fork the dashboard and make it yours. To get started, open the file in a Claude session and co-work it: drop your bank statements into the chat and ask Claude to populate the Transactions tab. The dashboard adapts to whatever you bring.</p>
+        <a href="https://github.com/sarthak-guleria/india-finance-dashboard" target="_blank" class="cta-main">View on GitHub →</a>
+      </div>
+
+      <h2>What's next</h2>
+
+      <p>I'm also getting back into writing after a fairly long hiatus.</p>
+
+      <p>Next up is a piece on tokenisation, drawing on some of the work we're doing at <a href="https://openeden.com" target="_blank">OpenEden</a>.</p>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer">
+        Not a replacement for a real financial tool. The tax engine is India-only and tracks FY 2026-27 rules. Numbers in the template are illustrative. localStorage is browser-local and capped around 5MB, so attachments stored as base64 share that budget.
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="article-footer">
+      <a href="../writing.html" class="back-link">← Back to writing</a>
+      <div class="share-links">
+        <a href="https://x.com/Fren_pm" target="_blank">X</a>
+        <a href="https://www.linkedin.com/in/sarthak-64ba12229/" target="_blank">LinkedIn</a>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
