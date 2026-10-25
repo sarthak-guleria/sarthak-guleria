@@ -173,8 +173,10 @@ async function generate() {
 
   for (const { slug, title } of PAGES) {
     const html = buildHTML(title);
-    // waitUntil: networkidle0 ensures Google Fonts finish loading before screenshot
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    // Wait for the page load, then for Google Fonts to finish before the screenshot
+    // (networkidle0 hangs on a reused page in Puppeteer 25)
+    await page.setContent(html, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
 
     const outPath = path.join(outDir, `${slug}.png`);
     await page.screenshot({

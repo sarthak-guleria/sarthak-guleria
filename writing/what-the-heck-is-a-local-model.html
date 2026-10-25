@@ -984,7 +984,7 @@
         <li><span class="step-number">1</span><div class="step-content"><strong>Privacy.</strong> Journals, health questions, finances, personal documents. Nothing you type is sent anywhere.</div></li>
         <li><span class="step-number">2</span><div class="step-content"><strong>Save your tokens.</strong> Rewrites, summaries and quick lookups run free on your laptop. Your paid cloud quota goes to the hard problems.</div></li>
         <li><span class="step-number">3</span><div class="step-content"><strong>Offline.</strong> On a plane or on bad hotel wifi, it works exactly the same.</div></li>
-        <li><span class="step-number">4</span><div class="step-content"><strong>Fewer guardrails.</strong> You pick a model whose behaviour suits you instead of living with someone else's refusal policy. More on this at the end.</div></li>
+        <li><span class="step-number">4</span><div class="step-content"><strong>Fewer guardrails.</strong> You pick a model whose behaviour suits you instead of living with someone else's refusal policy. Where to find these is covered in the setup section.</div></li>
         <li><span class="step-number">5</span><div class="step-content"><strong>It doesn't change under you.</strong> Cloud models get updated, retired and repriced overnight. A downloaded model behaves the same next year.</div></li>
       </ol>
 
@@ -1019,12 +1019,15 @@
 
       <p><strong>The Ollama library</strong> at <a href="https://ollama.com/library" target="_blank">ollama.com/library</a> is the easiest start. Every model there runs with one <code>ollama run</code> command. One thing to watch: the same list now includes cloud models. Any name ending in <code>-cloud</code> runs on Ollama's servers, so your prompts leave the machine. Handy when a model is too big for your laptop, but it isn't local.</p>
 
-      <p><strong>Hugging Face</strong> at <a href="https://huggingface.co/models" target="_blank">huggingface.co</a> is where almost every open model is published first, including fine-tuned and uncensored versions. Look for files ending in <code>.gguf</code>, which is the format laptop runners use. Ollama can pull them directly with <code>ollama run hf.co/</code> followed by the user and model name from the page.</p>
+      <p><strong>Hugging Face</strong> at <a href="https://huggingface.co/models" target="_blank">huggingface.co</a> is where almost every open model is published first, including fine-tuned versions. Look for files ending in <code>.gguf</code>, which is the format laptop runners use. Ollama can pull them directly with <code>ollama run hf.co/</code> followed by the user and model name from the page. Versions labelled "abliterated" have their refusal training removed. They help when a mainstream model turns down ordinary requests, and they won't push back on anything else either, so the judgement is yours.</p>
 
       <p><strong>Prefer not to use a terminal?</strong> The Ollama app has its own chat window, so you can pick a model and type without any commands. <a href="https://lmstudio.ai" target="_blank">LM Studio</a> is another free option with a ChatGPT-style interface, a model browser, and a warning when a model is too big for your machine.</p>
 
-      <p><strong>About uncensored models.</strong> Search the Ollama library or Hugging Face for "abliterated" and you'll find versions of popular models with their refusal training removed. They're useful when a mainstream model refuses ordinary requests. They also do what you ask without pushback, so the judgement is yours.</p>
+      <h2>That's it</h2>
 
+      <p>When Riccardo set this up for me, the moment it clicked was turning off the wifi and watching it keep answering. That's the whole idea. The model is just a file, and your laptop is enough to run it.</p>
+
+      <p>You don't need to replace anything. Keep your cloud subscription for the hard problems. Send the private stuff, the quick stuff and the repetitive stuff to the model on your own machine. Start with <code>qwen3.5:4b</code>, ask it something you wouldn't type into ChatGPT, and see how it feels.</p>
 
       <!-- End CTA -->
       <div class="end-cta">
