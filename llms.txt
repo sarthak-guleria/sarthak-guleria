@@ -11,7 +11,10 @@ Personal site for Sarthak Guleria — product manager with 4+ years in fintech a
 
 ## Writing
 
-Technical guides on DeFi mechanics, written for practitioners.
+Guides on DeFi mechanics, AI tools and product building, written for practitioners.
+
+- What the Heck is a Local Model? — https://sarthak-guleria.github.io/sarthak-guleria/writing/what-the-heck-is-a-local-model.html
+  A beginner's guide to running AI models locally with Ollama: what 8B and Q4 mean, how much RAM you need, real MacBook Air benchmarks, and a 10-minute setup.
 
 - Building with Claude as a PM — https://sarthak-guleria.github.io/sarthak-guleria/writing/building-with-claude-as-a-pm.html
   Building MVPs collapsed from weeks to days. The workflow, the four words you have to know first, and a worked example so the abstract gets concrete.

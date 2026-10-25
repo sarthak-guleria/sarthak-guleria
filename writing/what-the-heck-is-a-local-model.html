@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What the Heck is a Local Model? Run AI on Your Own Laptop | Sarthak Guleria</title>
+  <meta name="description" content="A beginner's guide to running AI models locally with Ollama: what 8B and Q4 mean, how much RAM you need, real MacBook Air benchmarks, and a 10-minute setup." />
+  <link rel="canonical" href="https://sarthak-guleria.github.io/sarthak-guleria/writing/what-the-heck-is-a-local-model.html" />
+  <meta property="og:title" content="What the Heck is a Local Model?" />
+  <meta property="og:description" content="A beginner's guide to running AI models locally with Ollama: what 8B and Q4 mean, how much RAM you need, real MacBook Air benchmarks, and a 10-minute setup." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sarthak-guleria.github.io/sarthak-guleria/writing/what-the-heck-is-a-local-model.html" />
+  <meta property="og:image" content="https://sarthak-guleria.github.io/sarthak-guleria/og-images/what-the-heck-is-a-local-model.png" />
+  <meta property="article:author" content="Sarthak Guleria" />
+  <meta property="article:published_time" content="2026-10-25" />
+  <meta property="og:site_name" content="Sarthak Guleria" />
+  <meta property="og:image:width" content="2400" />
+  <meta property="og:image:height" content="1260" />
+  <meta property="og:image:alt" content="What the Heck is a Local Model? by Sarthak Guleria" />
+  <meta property="article:modified_time" content="2026-10-25" />
+  <meta property="article:section" content="AI" />
+  <meta property="article:tag" content="Local LLM" />
+  <meta property="article:tag" content="Ollama" />
+  <meta property="article:tag" content="Open-weight models" />
+  <meta property="article:tag" content="Apple Silicon" />
+  <meta name="twitter:image:alt" content="What the Heck is a Local Model? by Sarthak Guleria" />
+  <meta name="author" content="Sarthak Guleria" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:creator" content="@Fren_pm" />
+  <meta name="twitter:title" content="What the Heck is a Local Model?" />
+  <meta name="twitter:description" content="A beginner's guide to running AI models locally with Ollama: what 8B and Q4 mean, how much RAM you need, real MacBook Air benchmarks, and a 10-minute setup." />
+  <meta name="twitter:image" content="https://sarthak-guleria.github.io/sarthak-guleria/og-images/what-the-heck-is-a-local-model.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "What the Heck is a Local Model?",
+    "alternativeHeadline": "Run AI on your own laptop: a beginner's guide to local models",
+    "description": "A beginner's guide to running AI models locally with Ollama: what 8B and Q4 mean, how much RAM you need, real MacBook Air benchmarks, and a 10-minute setup.",
+    "image": "https://sarthak-guleria.github.io/sarthak-guleria/og-images/what-the-heck-is-a-local-model.png",
+    "datePublished": "2026-10-25",
+    "dateModified": "2026-10-25",
+    "inLanguage": "en",
+    "wordCount": 2490,
+    "timeRequired": "PT11M",
+    "articleSection": "AI",
+    "keywords": ["local LLM", "local AI model", "Ollama", "run AI offline", "open-weight models", "quantization", "LLM parameters", "tokens per second", "Apple Silicon", "MacBook Air"],
+    "about": [{"@type": "Thing", "name": "Large language model"}, {"@type": "SoftwareApplication", "name": "Ollama", "url": "https://ollama.com"}],
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://sarthak-guleria.github.io/sarthak-guleria/writing/what-the-heck-is-a-local-model.html" },
+    "author": { "@type": "Person", "name": "Sarthak Guleria", "url": "https://sarthak-guleria.github.io/sarthak-guleria/", "sameAs": ["https://x.com/Fren_pm", "https://www.linkedin.com/in/sarthak-64ba12229/"] },
+    "publisher": { "@type": "Person", "name": "Sarthak Guleria", "url": "https://sarthak-guleria.github.io/sarthak-guleria/" },
+    "url": "https://sarthak-guleria.github.io/sarthak-guleria/writing/what-the-heck-is-a-local-model.html"
+  }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23faf8f5' width='100' height='100' rx='12'/><text x='50' y='72' font-family='Brush Script MT, cursive' font-size='58' font-style='italic' fill='%231a1a1a' text-anchor='middle'>S</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf8f5;
+      --bg-subtle: #f5f2ed;
+      --ink: #1a1a1a;
+      --ink-light: #4a4a4a;
+      --ink-faded: #888;
+      --accent: #2c5530;
+      --accent-light: #e8f0e8;
+      --border: #e5e2dd;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      line-height: 1.75;
+      font-size: 18px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    nav {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    nav a {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink-faded);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+
+    nav a:hover { color: var(--ink); }
+    nav .home { color: var(--ink); font-weight: 500; }
+    nav .nav-links { display: flex; gap: 20px; align-items: center; }
+
+    /* Article container */
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 72px 32px 120px;
+    }
+
+    /* Article header */
+    .article-header {
+      margin-bottom: 56px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .article-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .article-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+    }
+
+    .article-readtime::before {
+      content: '·';
+      margin-right: 12px;
+      color: var(--border);
+    }
+
+    h1.article-title {
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .article-subtitle {
+      font-size: 18px;
+      color: var(--ink-faded);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* Article body */
+    .article-body > * + * {
+      margin-top: 28px;
+    }
+
+    .article-body h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      margin-top: 52px;
+      margin-bottom: -12px;
+    }
+
+    .article-body h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+      margin-top: 36px;
+      margin-bottom: -14px;
+    }
+
+    .article-body p {
+      color: var(--ink-light);
+    }
+
+    .article-body strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .article-body a {
+      color: var(--accent);
+    }
+
+    .article-body pre {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 13px;
+      color: var(--ink);
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .article-body code {
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 0.88em;
+      background: var(--bg-subtle);
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: var(--ink);
+    }
+
+    .article-body pre code {
+      background: transparent;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    /* Callout / intro block */
+    .callout {
+      background: var(--bg-subtle);
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .callout p {
+      font-size: 16px;
+      color: var(--ink-light);
+      margin: 0;
+    }
+
+    .callout p + p {
+      margin-top: 12px;
+    }
+
+    /* Steps list */
+    .steps-list {
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .steps-list li {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      counter-increment: steps;
+    }
+
+    .steps-list li:first-child {
+      border-top: 1px solid var(--border);
+    }
+
+    .step-number {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-light);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+      min-width: 0;
+      font-size: 16px;
+      color: var(--ink-light);
+      line-height: 1.65;
+    }
+
+    .step-content pre {
+      margin-top: 10px;
+    }
+
+    /* Stat row */
+    .stat-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+    }
+
+    /* Comparison table */
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+
+    .compare-table th {
+      background: var(--bg-subtle);
+      color: var(--ink-faded);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .compare-table td {
+      padding: 14px 16px;
+      color: var(--ink-light);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .compare-table td:first-child {
+      color: var(--ink);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .table-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--ink-faded);
+      margin-top: 10px !important;
+    }
+
+
+    /* End CTA */
+    .end-cta {
+      margin-top: 56px;
+      padding: 36px 40px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .end-cta p {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: var(--ink-faded);
+      margin-bottom: 20px;
+    }
+
+    .end-cta a.cta-main {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 28px;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 4px;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .end-cta a.cta-main:hover { background: var(--ink-light); }
+
+    /* Disclaimer */
+    .disclaimer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+      line-height: 1.6;
+    }
+
+    /* Banner: next-token loop */
+    .banner {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 28px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 18px;
+    }
+
+    .banner-status { display: flex; align-items: center; gap: 8px; }
+
+    .banner-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+    .banner-screen {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+      min-height: 132px;
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 2;
+      color: var(--ink);
+    }
+
+    .banner-prompt { color: var(--ink-faded); }
+    .banner-prompt::before { content: '> '; color: var(--accent); }
+
+    .tok {
+      padding: 2px 1px;
+      border-radius: 3px;
+      animation: tok-in 0.25s ease-out;
+    }
+
+    .tok:nth-child(odd) { background: var(--accent-light); }
+    .tok:nth-child(even) { background: #efe9df; }
+
+    @keyframes tok-in { from { opacity: 0; } to { opacity: 1; } }
+
+    .caret {
+      display: inline-block;
+      width: 8px; height: 16px;
+      background: var(--accent);
+      vertical-align: -3px;
+      margin-left: 2px;
+      animation: blink 1s steps(1) infinite;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .banner-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--ink-faded);
+    }
+
+    .banner-foot strong { color: var(--accent); font-weight: 500; }
+
+    /* Weights strip */
+    .weights {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 22px 24px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .weights-grid {
+      position: absolute;
+      inset: 0;
+      padding: 10px 12px;
+      font-family: 'Menlo', 'Consolas', monospace;
+      font-size: 11px;
+      line-height: 1.7;
+      color: var(--ink-faded);
+      opacity: 0.35;
+      white-space: pre;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, transparent 42%, #000 78%);
+      mask-image: linear-gradient(90deg, transparent 0, transparent 42%, #000 78%);
+      pointer-events: none;
+    }
+
+    .weights-count {
+      position: relative;
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .weights-label {
+      position: relative;
+      font-size: 13px;
+      color: var(--ink-faded);
+      margin-top: 4px;
+      max-width: 240px;
+    }
+
+    @media (max-width: 600px) {
+      .weights-count { font-size: 24px; }
+      .weights-grid { opacity: 0.22; }
+    }
+
+    /* Token race */
+    .race {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px 22px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .race-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+    }
+
+    .widget-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--accent);
+      background: var(--accent-light);
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 5px 12px;
+      cursor: pointer;
+    }
+
+    .widget-btn:hover { border-color: var(--accent); }
+    .widget-btn[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+
+    .lane + .lane { margin-top: 16px; }
+
+    .lane-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .lane-label span { color: var(--ink-faded); }
+
+    .lane-text {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink-light);
+      background: var(--bg-subtle);
+      border-radius: 4px;
+      padding: 10px 12px;
+      position: relative;
+    }
+
+    .lane-text .ghost { visibility: hidden; }
+
+    .lane-text .typed {
+      position: absolute;
+      top: 10px; left: 12px; right: 12px;
+    }
+
+    /* Charts */
+    .article-body figure.chart { margin: 36px 0; }
+    .chart { border: 1px solid var(--border); border-radius: 6px; padding: 20px 22px 16px; font-family: 'Inter', sans-serif; position: relative; }
+    .chart-title { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .chart-sub { font-size: 12px; color: var(--ink-faded); margin-top: 2px; }
+    .chart-sub code { font-size: 11px; }
+    .chart-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; font-size: 12px; color: var(--ink-light); }
+    .chart-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+    .chart-legend i.key-line { width: 16px; height: 2px; border-radius: 1px; background: #888; vertical-align: 3px; }
+    .chart-legend i.key-dot { border-radius: 50%; }
+    .chart-plot { margin-top: 10px; }
+    .chart-plot svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .chart-plot text { font-family: 'Inter', sans-serif; fill: #888; font-size: 11px; }
+    .chart-plot .lbl { fill: #4a4a4a; font-size: 12px; }
+    .chart-plot .hit { fill: transparent; cursor: pointer; }
+    .chart-plot .hit:focus { outline: none; }
+    .chart-plot .bar { transition: opacity 0.15s; }
+    .chart-plot .bar.dim { opacity: 0.45; }
+    .chart-tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; line-height: 1.4; padding: 6px 10px; border-radius: 4px; white-space: nowrap; opacity: 0; transition: opacity 0.1s; z-index: 2; }
+    .chart-tip strong { font-weight: 600; color: var(--bg); }
+    .chart-tip span { color: #cfcac2; }
+    .chart-data { margin-top: 10px; font-size: 12px; color: var(--ink-faded); }
+    .chart-data summary { cursor: pointer; }
+    .chart-data table { margin-top: 10px; }
+    .draw { transition: stroke-dashoffset 1.2s ease; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .banner-dot, .caret, .tok { animation: none; }
+      .draw { transition: none; }
+    }
+
+    /* Back / footer */
+    .article-footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
+    .back-link {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover { color: var(--ink); }
+
+    .share-links { display: flex; gap: 16px; }
+    .share-links a {
+      color: var(--ink-faded);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .share-links a:hover { color: var(--ink); }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .container { padding: 48px 20px 80px; }
+      nav { padding: 20px; }
+      h1.article-title { font-size: 26px; }
+      .stat-row { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .compare-table { font-size: 13px; }
+      .compare-table th, .compare-table td { padding: 10px 12px; }
+      .compare-table td:first-child { white-space: normal; }
+      .article-footer { flex-direction: column; gap: 16px; }
+      .end-cta { padding: 28px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="../index.html" class="home">Sarthak Guleria</a>
+    <div class="nav-links">
+      <a href="../writing.html">← Writing</a>
+      <a href="../index.html">Home</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="article-header">
+      <div class="article-meta">
+        <span class="article-tag">AI</span>
+        <span class="article-date">October 2026</span>
+        <span class="article-readtime">11 min read</span>
+      </div>
+      <h1 class="article-title">What the Heck is a Local Model?</h1>
+      <p class="article-subtitle">What 8B and Q4 actually mean, what your laptop can run, why you would bother, and how to have one going in ten minutes.</p>
+    </header>
+
+    <!-- Body -->
+    <div class="article-body">
+
+      <!-- Banner -->
+      <div class="banner" aria-label="A local model writing a reply one token at a time">
+        <div class="banner-top">
+          <span>Running on this laptop</span>
+          <span class="banner-status"><span class="banner-dot"></span>wifi off</span>
+        </div>
+        <div class="banner-screen">
+          <div class="banner-prompt" id="banner-prompt">Explain a local model in one sentence.</div>
+          <div><span id="banner-out"></span><span class="caret"></span></div>
+        </div>
+        <div class="banner-foot">
+          <span><strong>qwen3.5:4b</strong> · MacBook Air M4</span>
+          <span>each shade is one token, slowed down 5×</span>
+        </div>
+      </div>
+
+      <!-- Intro -->
+      <div class="callout">
+        <p>Most people I know use AI every day and have never thought about where it runs. Every prompt goes off to a company's server and comes back with an answer.</p>
+        <p>I struggled to set up my first local model. My dear fren <a href="https://www.linkedin.com/in/riccardomontagnin/" target="_blank">Riccardo Montagnin</a>, a proper tech wizard, sat down with me and got it running. Understanding what I was actually looking at took longer still, because every guide assumes you already know what 8B, Q4 and context mean.</p>
+        <p>I'm writing this so you can set one up in ten minutes on your own. It covers what a local model is, how it works, what the numbers mean, why you'd bother, and a step-by-step setup at the end. Every number for my machine was measured on it.</p>
+      </div>
+
+      <h2>What a local model is</h2>
+
+      <p>ChatGPT, Claude and Gemini are cloud models. You type, your words travel over the internet to a data center, a rack of GPUs works out the answer, and it travels back. You're borrowing someone else's computer.</p>
+
+      <p>A local model is the same idea running on your own machine. The model is a file on your disk. Your laptop's chip does the work. <strong>Turn off the wifi and it keeps answering.</strong></p>
+
+      <p>This is possible because several AI labs publish their models for anyone to download. Meta has Llama. Alibaba has Qwen. Google has Gemma. OpenAI has gpt-oss. These are called open-weight models, and they're free.</p>
+
+      <div class="table-scroll">
+      <table class="compare-table">
+        <thead>
+          <tr><th></th><th>Cloud model</th><th>Local model</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Where it runs</td><td>A company's data center</td><td>Your laptop</td></tr>
+          <tr><td>Your data</td><td>Sent to their servers</td><td>Never leaves your machine</td></tr>
+          <tr><td>Needs internet</td><td>Yes</td><td>Only to download it once</td></tr>
+          <tr><td>Cost</td><td>Subscription or per use</td><td>Free after the download</td></tr>
+          <tr><td>Quality</td><td>The best available</td><td>A step or two behind</td></tr>
+          <tr><td>Limits</td><td>Set by the provider</td><td>Set by your hardware</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+
+      <h2>How it works</h2>
+
+      <p>A model is a very large file of numbers. During training, a lab adjusts billions of those numbers until the file gets good at one task: given some text, predict what comes next. Training costs the lab millions of dollars. Once it's done, a decent laptop can run the result.</p>
+
+      <div class="weights" id="weights" aria-label="qwen3:8b contains 8,190,735,360 numbers">
+        <div class="weights-grid" id="weights-grid" aria-hidden="true"></div>
+        <div class="weights-count" id="weights-count">8,190,735,360</div>
+        <div class="weights-label">numbers inside <code>qwen3:8b</code>, each one set during training</div>
+      </div>
+
+      <p>Running it looks like this. Your laptop loads the file into memory. You type a prompt. The chip pushes your words through all of those numbers and out comes the most likely next piece of a word. That piece is added to the text, and the whole thing runs again. And again. <strong>Every word you see on screen is one full pass through the model.</strong></p>
+
+      <p>Those pieces are called tokens. A token is roughly three quarters of a word, so 100 tokens is about 75 words.</p>
+
+      <p>The software that does the loading and running is called a runner. The one I use is <strong>Ollama</strong>. It downloads models, loads them, and gives you a chat. It works a bit like a music player, with models as the songs.</p>
+
+      <h2>The numbers, decoded</h2>
+
+      <p>Every model comes with a name like <code>qwen3:8b</code> and a few specs. Six terms cover most of what you'll see.</p>
+
+      <h3>Parameters: the B</h3>
+
+      <p>Parameters are the numbers inside the file. The B means billion. <code>qwen3:8b</code> has 8.2 billion of them. More parameters usually means a smarter model. It also means a bigger file and slower replies.</p>
+
+      <p>A rough feel for sizes: 1 to 4B handles rewriting, summaries and simple questions. 7 to 14B is a decent everyday assistant. 20 to 30B copes with longer documents and harder reasoning. The big cloud models are far larger again.</p>
+
+      <h3>Quantization: the Q</h3>
+
+      <p>Each parameter is stored as a number with a certain precision. Full precision uses 16 bits per number. Quantization rounds those numbers down to fewer bits, most commonly 4. The file shrinks to about a quarter of its size and the model gets slightly less sharp.</p>
+
+      <p>It's like saving a photo as a high-quality JPEG. Smaller file, and you mostly can't tell. Labels like <code>Q4_K_M</code> mean 4-bit and are the sensible default. <strong>A 4-bit version of a bigger model usually beats a full-precision version of a smaller one.</strong></p>
+
+      <h3>Memory</h3>
+
+      <p>The whole model has to fit in your computer's memory (RAM) while it runs. At 4-bit, a model needs roughly 0.6GB per billion parameters for the file alone.</p>
+
+      <p>Then it needs working space for the conversation, and that grows with the context window (next section). On my machine <code>qwen3:8b</code> is a 5.2GB file. With room for 4,096 tokens it used 5.1GB of memory. At 16,384 tokens, 7.0GB. At 32,768 tokens, <strong>9.4GB</strong>. Same model, almost double the memory.</p>
+
+      <figure class="chart" id="chart-mem" data-title="qwen3:8b memory by context size">
+        <div class="chart-title">qwen3:8b memory in use, by context window</div>
+        <div class="chart-sub">Measured with <code>ollama ps</code> on a MacBook Air M4, 32GB</div>
+        <div class="chart-plot"></div>
+        <details class="chart-data"><summary>Show data</summary>
+          <table class="compare-table"><thead><tr><th>Context</th><th>Memory</th></tr></thead><tbody>
+            <tr><td>2,048 tokens</td><td>4.8GB</td></tr><tr><td>4,096 tokens</td><td>5.1GB</td></tr><tr><td>8,192 tokens</td><td>5.8GB</td></tr><tr><td>16,384 tokens</td><td>7.0GB</td></tr><tr><td>32,768 tokens</td><td>9.4GB</td></tr>
+          </tbody></table></details>
+      </figure>
+
+      <p>Newer models are much leaner here. Ollama reported 4.1GB for <code>qwen3.5:4b</code> at every context size from 2,048 to 32,768 tokens. Its design needs far less working space, though it also runs on a different engine that reserves memory differently, so treat that one as a floor.</p>
+
+      <h3>Context window</h3>
+
+      <p>The context window is how much text the model can hold in mind at once: your conversation, any document you pasted, and its own replies. On my Mac, Ollama gave both models 16,384 tokens by default, about 12,000 words. The default changes between Ollama versions and machines. A bigger window lets you work with longer documents, and costs more memory.</p>
+
+      <h3>Tokens per second</h3>
+
+      <p>This is how fast the model writes. Around 10 tokens per second feels like someone typing quickly. Around 20 is faster than you can comfortably read. Here's the same reply at real speed, from my MacBook Air M4 (32GB) and from published tests on other chips:</p>
+
+      <div class="race" id="race">
+        <div class="race-head">
+          <span>Same reply, real speed, different models and chips</span>
+          <button class="widget-btn" id="race-replay" type="button">Replay</button>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Llama 2 7B <span>M4 Max · 83 tokens/sec</span></div>
+          <div class="lane-text" data-tps="83"></div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Llama 2 7B <span>M4 Pro · 51 tokens/sec</span></div>
+          <div class="lane-text" data-tps="51"></div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">qwen3.5:4b <span>my M4 Air · 28 tokens/sec</span></div>
+          <div class="lane-text" data-tps="28"></div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Llama 2 7B <span>base M4 · 24 tokens/sec</span></div>
+          <div class="lane-text" data-tps="24"></div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">qwen3:8b <span>my M4 Air · 20 tokens/sec</span></div>
+          <div class="lane-text" data-tps="20"></div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">Llama 2 7B <span>M1 · 14 tokens/sec</span></div>
+          <div class="lane-text" data-tps="14"></div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">gpt-oss:20b <span>M4 Air, 24GB · 13 tokens/sec</span></div>
+          <div class="lane-text" data-tps="13"></div>
+        </div>
+        <div class="lane">
+          <div class="lane-label">You, reading <span>about 5 tokens/sec</span></div>
+          <div class="lane-text" data-tps="5"></div>
+        </div>
+      </div>
+
+      <p>The two Qwen lanes are mine: Ollama on my Air, 4-bit models, timed after the model was already loaded. Ollama ran <code>qwen3.5:4b</code> on Apple's MLX engine and <code>qwen3:8b</code> on llama.cpp, so treat the gap between those two as rough. The Llama 2 7B lanes come from <a href="https://github.com/ggml-org/llama.cpp/discussions/4167" target="_blank">llama.cpp's public Apple Silicon benchmark</a>, the same 4-bit model run on each chip, which makes them the cleanest chip-to-chip comparison there is. The <code>gpt-oss:20b</code> lane is <a href="https://www.microcenter.com/site/mc-news/article/can-your-pc-run-gpt-oss-ai.aspx" target="_blank">Micro Center's test</a>. Your numbers will move with context size, whatever else is open, and the Ollama version.</p>
+
+      <figure class="chart" id="chart-tasks">
+        <div class="chart-title">Seconds to write a 300-word reply</div>
+        <div class="chart-sub">About 400 tokens, divided by each setup's tokens per second. Lower is faster</div>
+        <div class="chart-legend"><span><i style="background:#3d7a45"></i>Measured on my Air</span><span><i style="background:#c9a227"></i>Published benchmark</span></div>
+        <div class="chart-plot"></div>
+        <details class="chart-data"><summary>Show data</summary>
+          <table class="compare-table"><thead><tr><th>Model and machine</th><th>Tokens/sec</th><th>400 tokens</th></tr></thead><tbody>
+            <tr><td>gpt-oss:120b, M2 Ultra desktop</td><td>85.6 (llama.cpp)</td><td>4.7s</td></tr>
+            <tr><td>qwen3.5:4b, my M4 Air</td><td>27.8 (measured)</td><td>14.4s</td></tr>
+            <tr><td>Llama 2 7B, base M4</td><td>24.1 (llama.cpp)</td><td>16.6s</td></tr>
+            <tr><td>qwen3:8b, my M4 Air</td><td>19.6 (measured)</td><td>20.4s</td></tr>
+            <tr><td>gpt-oss:20b, M4 Air 24GB</td><td>13.0 (Micro Center)</td><td>30.8s</td></tr>
+          </tbody></table></details>
+      </figure>
+
+      <p>The fastest bar is the biggest model. <code>gpt-oss:120b</code> on an M2 Ultra desktop Mac, from <a href="https://github.com/ggml-org/llama.cpp/blob/master/benches/mac-m2-ultra/mac-m2-ultra.md" target="_blank">llama.cpp's own benchmark file</a>, writes the reply in under 5 seconds. Two things explain it: that chip moves memory at 800GB per second, more than six times my Air, and gpt-oss only reads a small slice of itself for each token.</p>
+
+      <div class="table-scroll">
+      <table class="compare-table">
+        <thead>
+          <tr><th>Measured on M4 Air, 32GB</th><th>qwen3.5:4b</th><th>qwen3:8b</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>File size</td><td>4.0GB</td><td>5.2GB</td></tr>
+          <tr><td>Memory, 16K context</td><td>4.1GB</td><td>7.0GB</td></tr>
+          <tr><td>Writing speed</td><td>27.6 to 28.0 tok/s</td><td>18.9 to 20.9 tok/s</td></tr>
+          <tr><td>First load</td><td>0.7s</td><td>3.1s</td></tr>
+          <tr><td>Explain parameters in 150 words</td><td>7.3s</td><td>9.7s</td></tr>
+          <tr><td>300-word short story</td><td>16.3s</td><td>21.2s</td></tr>
+          <tr><td>Logic riddle, thinking on</td><td>34.2s</td><td>69.7s</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>Speed has a simple ceiling. Every token means reading the whole model file from memory once, so <strong>speed is capped at memory bandwidth divided by file size</strong>. The base M4 chip reads memory at 120GB per second. 120 divided by 5.2GB gives <code>qwen3:8b</code> a ceiling of about 23 tokens per second. I measured 19 to 21. For the 4.0GB <code>qwen3.5:4b</code> the ceiling is 30, and I measured 28. The same math explains why bigger chips are faster: an M4 Pro moves 273GB per second and an M4 Max up to 546GB per second, so the same model should run roughly 2 to 4 times faster on them.</p>
+
+      <figure class="chart" id="chart-speed">
+        <div class="chart-title">Speed ceiling on a base M4, and where real models land</div>
+        <div class="chart-sub">Tokens per second against model file size</div>
+        <div class="chart-legend"><span><i class="key-line"></i>Ceiling: 120GB/s ÷ file size</span><span><i class="key-dot" style="background:#3d7a45"></i>Measured on my Air</span><span><i class="key-dot" style="background:#c9a227"></i>Measured by Micro Center</span></div>
+        <div class="chart-plot"></div>
+        <details class="chart-data"><summary>Show data</summary>
+          <table class="compare-table"><thead><tr><th>Model</th><th>File</th><th>Ceiling</th><th>Measured</th></tr></thead><tbody>
+            <tr><td>qwen3.5:4b</td><td>4.0GB</td><td>30 tok/s</td><td>27.8 tok/s</td></tr>
+            <tr><td>qwen3:8b</td><td>5.2GB</td><td>23 tok/s</td><td>19.6 tok/s</td></tr>
+            <tr><td>gpt-oss:20b</td><td>13.8GB</td><td>8.7 tok/s</td><td>13 tok/s (24GB Air)</td></tr>
+          </tbody></table></details>
+      </figure>
+
+      <p>The one model above the line is <code>gpt-oss:20b</code>. It's a mixture-of-experts model: only a slice of the file is read for each token, so it beats the simple ceiling. That's the main trick behind big models that still run fast on laptops.</p>
+
+      <h3>Thinking mode</h3>
+
+      <p>Some models, Qwen3 included, can think before answering. They write out their reasoning first, then the reply. It helps with logic and maths, and it's slow. With thinking on, a simple riddle took <code>qwen3:8b</code> <strong>70 seconds</strong> on my Air, because it wrote 1,313 tokens of reasoning before a one-line answer. <code>qwen3.5:4b</code> took 34 seconds for the same riddle. For rewriting and quick questions, turn it off. The setup section shows how.</p>
+
+      <h2>What your laptop can run</h2>
+
+      <p>Memory decides what you can run. Leave roughly a third of it for your operating system and browser, and the rest is your model budget. Download sizes below are from the Ollama library and can differ slightly by machine.</p>
+
+      <div class="table-scroll">
+      <table class="compare-table">
+        <thead>
+          <tr><th>Your memory</th><th>Comfortable size</th><th>Good first picks</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>8GB</td><td>1 to 4B</td><td><code>qwen3.5:4b</code> (3.3 to 4GB), <code>llama3.2:3b</code> (2.0GB)</td></tr>
+          <tr><td>16GB</td><td>Up to 9B</td><td><code>qwen3.5:9b</code> (6.6GB), <code>qwen3:8b</code> (5.2GB)</td></tr>
+          <tr><td>24GB</td><td>Up to about 20B</td><td><code>gpt-oss:20b</code> (13.8GB), <code>gemma3:12b</code> (8.2GB)</td></tr>
+          <tr><td>32GB</td><td>Up to about 30B</td><td><code>qwen3:30b</code> (18.6GB), <code>qwen3.5:27b</code> (17.5GB)</td></tr>
+          <tr><td>64GB and up</td><td>70B class</td><td>The largest open models, at 4-bit</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>A note on two of those. <code>qwen3:30b</code> is a mixture-of-experts model: it holds 30B parameters but only uses about 3B for each token, so it answers far faster than its size suggests. <code>gpt-oss:20b</code> is OpenAI's open model, also mixture-of-experts. I haven't run it locally on my Air, but <a href="https://www.microcenter.com/site/mc-news/article/can-your-pc-run-gpt-oss-ai.aspx" target="_blank">Micro Center measured</a> about 13 tokens per second on a MacBook Air M4 with 24GB.</p>
+
+      <p><strong>On a Mac</strong>, the chip and graphics share one pool of memory, which is why Macs are unusually good at this. <strong>On a Windows PC</strong>, look at the memory on your graphics card (VRAM). System RAM matters much less. A model that fits entirely on an NVIDIA card with 12GB or more runs very fast. Without a graphics card it still runs on the processor, just slower.</p>
+
+      <p>To check whether a model really fits, run <code>ollama ps</code> while it's loaded. The PROCESSOR column should say <code>100% GPU</code>. If it shows a split like <code>40%/60% CPU/GPU</code>, the model is spilling out of fast memory and you should drop a size.</p>
+
+      <h2>Pick a model for the job</h2>
+
+      <p>Text chat is only the start. There are open models for coding, reading images, making images, speech and video. These are the ones I'd try first as of October 2026, all from the lab that made them. New releases land every week, so sort the <a href="https://ollama.com/library?sort=newest" target="_blank">Ollama library by newest</a> once in a while.</p>
+
+      <div class="table-scroll">
+      <table class="compare-table">
+        <thead>
+          <tr><th>If you want to</th><th>Try first</th><th>Runs in</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chat and write</td><td><code>gemma4:e4b</code> (6.6GB), <code>qwen3.5:9b</code> (6.6GB)</td><td>Ollama</td></tr>
+          <tr><td>Think through hard problems</td><td><code>gpt-oss:20b</code> (13.8GB)</td><td>Ollama</td></tr>
+          <tr><td>Write code</td><td><code>qwen3-coder:30b</code> (18.6GB), <code>devstral-small-2:24b</code> (15.2GB)</td><td>Ollama, 32GB+</td></tr>
+          <tr><td>Read images and scans</td><td><code>qwen3-vl:8b</code> (6.2GB), <code>glm-ocr</code> (2.7GB) for documents</td><td>Ollama</td></tr>
+          <tr><td>Make images</td><td><code>x/flux2-klein:4b</code> (5.7GB), <code>x/z-image-turbo</code> (12.8GB)</td><td>Ollama, Mac only for now</td></tr>
+          <tr><td>Turn text into speech</td><td><code>phonon</code> (0.1GB), Kokoro-82M</td><td>Ollama on Apple Silicon, or Hugging Face</td></tr>
+          <tr><td>Turn speech into text</td><td>Whisper large-v3-turbo, Qwen3-ASR 1.7B</td><td>whisper.cpp, or Hugging Face</td></tr>
+          <tr><td>Make video</td><td>Wan 2.2 TI2V-5B, LTX-2.5</td><td>ComfyUI, on a big NVIDIA GPU</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p><strong>Text, code and images.</strong> The <code>e4b</code> in <code>gemma4:e4b</code> means "effective 4B": it runs about as fast as a 4B model and also understands images and audio. For coding, <code>qwen3-coder:30b</code> is a mixture-of-experts model, so it stays quick despite its size. Both coding picks need a 32GB machine. On 16GB, <code>qwen3.5:9b</code> is a capable coding helper. For images, drag a photo or screenshot into the Ollama chat window, or put its file path after your question in the terminal.</p>
+
+      <p><strong>Making images.</strong> Ollama added image generation in January 2026, currently on Macs only. Run <code>ollama run x/flux2-klein:4b "a fox reading a newspaper"</code> and the picture is saved to the folder you ran it from. The 4B version is free for any use. The 9B version and some other image models are non-commercial only, so check the licence if it's for work.</p>
+
+      <p><strong>Voice.</strong> <code>phonon</code> is a tiny speech model that runs inside Ollama on Apple Silicon and uses about 120MB of memory. <a href="https://huggingface.co/hexgrad/Kokoro-82M" target="_blank">Kokoro</a> is the popular open alternative. Going the other way, <a href="https://huggingface.co/openai/whisper-large-v3-turbo" target="_blank">Whisper large-v3-turbo</a> from OpenAI transcribes speech to text and is small enough for any laptop. <a href="https://github.com/ggml-org/whisper.cpp" target="_blank">whisper.cpp</a> runs it from the same team behind llama.cpp.</p>
+
+      <p><strong>Video is the exception.</strong> <a href="https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B" target="_blank">Wan 2.2's 5B model</a> makes 720p clips and is described by its makers as running on a consumer graphics card like an RTX 4090. That is a 24GB desktop card. On a laptop, video generation is slow enough that it isn't worth it yet.</p>
+
+      <p>One safety habit for Hugging Face: download from the lab's own account (Qwen, Black Forest Labs, Wan-AI, OpenAI). Popular models get re-uploaded by strangers, sometimes with changes you can't see.</p>
+
+      <h2>Why bother</h2>
+
+      <p>Cloud models are better, and I still use them every day. Some work shouldn't leave your machine, though, and a lot of it doesn't need the best model available.</p>
+
+      <h3>For you</h3>
+
+      <ol class="steps-list">
+        <li><span class="step-number">1</span><div class="step-content"><strong>Privacy.</strong> Journals, health questions, finances, personal documents. Nothing you type is sent anywhere.</div></li>
+        <li><span class="step-number">2</span><div class="step-content"><strong>Save your tokens.</strong> Rewrites, summaries and quick lookups run free on your laptop. Your paid cloud quota goes to the hard problems.</div></li>
+        <li><span class="step-number">3</span><div class="step-content"><strong>Offline.</strong> On a plane or on bad hotel wifi, it works exactly the same.</div></li>
+        <li><span class="step-number">4</span><div class="step-content"><strong>Fewer guardrails.</strong> You pick a model whose behaviour suits you instead of living with someone else's refusal policy. More on this at the end.</div></li>
+        <li><span class="step-number">5</span><div class="step-content"><strong>It doesn't change under you.</strong> Cloud models get updated, retired and repriced overnight. A downloaded model behaves the same next year.</div></li>
+      </ol>
+
+      <h3>For teams and companies</h3>
+
+      <ol class="steps-list">
+        <li><span class="step-number">1</span><div class="step-content"><strong>Data stays in-house.</strong> Client records, contracts and source code never reach a third-party server. That matters in finance, health and law, and anywhere data-residency rules apply.</div></li>
+        <li><span class="step-number">2</span><div class="step-content"><strong>Internal workflows stay private.</strong> Your tools and agents run without showing an outside AI provider how your business works.</div></li>
+        <li><span class="step-number">3</span><div class="step-content"><strong>Predictable cost.</strong> You pay for hardware once. Per-token bills keep growing as more people and automations use them.</div></li>
+        <li><span class="step-number">4</span><div class="step-content"><strong>No lock-in.</strong> Open models can be swapped, tuned on your own data, and kept running whatever happens to a vendor.</div></li>
+      </ol>
+
+      <p>The catch is quality. A model that fits on a laptop is noticeably weaker than the best cloud models at hard reasoning, long code and niche facts, and it can be wrong with full confidence. Check anything that matters. <strong>I use both:</strong> local for private, simple and high-volume work, cloud for problems that need the strongest model.</p>
+
+      <h2>Try it now</h2>
+
+      <p>This takes about ten minutes, most of it the download. The commands are the same on Mac, Windows and Linux.</p>
+
+      <ol class="steps-list">
+        <li><span class="step-number">1</span><div class="step-content"><strong>Install Ollama.</strong> Download it from <a href="https://ollama.com/download" target="_blank">ollama.com/download</a> and open it once. It runs quietly in the background after that.</div></li>
+        <li><span class="step-number">2</span><div class="step-content"><strong>Open a terminal.</strong> The terminal is a window where you type commands instead of clicking. On a Mac, press Cmd + Space and type Terminal. On Windows, open the Start menu and type PowerShell.</div></li>
+        <li><span class="step-number">3</span><div class="step-content"><strong>Run your first model.</strong> Type this and press Enter. It downloads about 4GB the first time, then opens a chat.
+          <pre><code>ollama run qwen3.5:4b</code></pre></div></li>
+        <li><span class="step-number">4</span><div class="step-content"><strong>Talk to it.</strong> Type a question and press Enter. To leave the chat, type <code>/bye</code>.</div></li>
+        <li><span class="step-number">5</span><div class="step-content"><strong>Turn thinking off for everyday tasks.</strong> Faster answers, no visible reasoning.
+          <pre><code>ollama run qwen3.5:4b --think=false</code></pre></div></li>
+        <li><span class="step-number">6</span><div class="step-content"><strong>Learn three housekeeping commands.</strong> <code>ollama list</code> shows what you have downloaded. <code>ollama ps</code> shows what's loaded and how much memory it uses. <code>ollama rm qwen3.5:4b</code> deletes a model you no longer need.</div></li>
+        <li><span class="step-number">7</span><div class="step-content"><strong>Step up a size.</strong> Use the table above. If the 4B model felt fast, try the 9B. Stop when replies slow down or <code>ollama ps</code> stops showing <code>100% GPU</code>.</div></li>
+      </ol>
+
+      <h3>Where to find models</h3>
+
+      <p><strong>The Ollama library</strong> at <a href="https://ollama.com/library" target="_blank">ollama.com/library</a> is the easiest start. Every model there runs with one <code>ollama run</code> command. One thing to watch: the same list now includes cloud models. Any name ending in <code>-cloud</code> runs on Ollama's servers, so your prompts leave the machine. Handy when a model is too big for your laptop, but it isn't local.</p>
+
+      <p><strong>Hugging Face</strong> at <a href="https://huggingface.co/models" target="_blank">huggingface.co</a> is where almost every open model is published first, including fine-tuned and uncensored versions. Look for files ending in <code>.gguf</code>, which is the format laptop runners use. Ollama can pull them directly with <code>ollama run hf.co/</code> followed by the user and model name from the page.</p>
+
+      <p><strong>Prefer not to use a terminal?</strong> The Ollama app has its own chat window, so you can pick a model and type without any commands. <a href="https://lmstudio.ai" target="_blank">LM Studio</a> is another free option with a ChatGPT-style interface, a model browser, and a warning when a model is too big for your machine.</p>
+
+      <p><strong>About uncensored models.</strong> Search the Ollama library or Hugging Face for "abliterated" and you'll find versions of popular models with their refusal training removed. They're useful when a mainstream model refuses ordinary requests. They also do what you ask without pushback, so the judgement is yours.</p>
+
+
+      <!-- End CTA -->
+      <div class="end-cta">
+        <p>Ollama is free and takes a couple of minutes to install.</p>
+        <a href="https://ollama.com/download" target="_blank" class="cta-main">Download Ollama →</a>
+      </div>
+
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="article-footer">
+      <a href="../writing.html" class="back-link">← Back to writing</a>
+      <div class="share-links">
+        <a href="https://x.com/Fren_pm" target="_blank">X</a>
+        <a href="https://www.linkedin.com/in/sarthak-64ba12229/" target="_blank">LinkedIn</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+  (function () {
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function tokens(text) {
+      // Rough stand-in for a tokenizer: words, punctuation, long words split in two
+      var out = [];
+      (text.match(/\s*[\w'.]+|\s*[^\w\s]/g) || []).forEach(function (t) {
+        var w = t.trim();
+        if (w.length > 8) {
+          var cut = t.length - Math.ceil(w.length / 2);
+          out.push(t.slice(0, cut), t.slice(cut));
+        } else {
+          out.push(t);
+        }
+      });
+      return out;
+    }
+
+    // Banner: next-token loop
+    var out = document.getElementById('banner-out');
+    var reply = "It's an AI model that runs entirely on your own computer, so your prompts never leave the machine and it works without internet.";
+    var bTok = tokens(reply);
+    function bannerPlay() {
+      out.textContent = '';
+      if (still) { out.innerHTML = bTok.map(function (t) { return '<span class="tok">' + t + '</span>'; }).join(''); return; }
+      var i = 0;
+      (function step() {
+        if (i < bTok.length) {
+          var span = document.createElement('span');
+          span.className = 'tok';
+          span.textContent = bTok[i++];
+          out.appendChild(span);
+          setTimeout(step, 1000 / 5.6);
+        } else {
+          setTimeout(bannerPlay, 3500);
+        }
+      })();
+    }
+    bannerPlay();
+
+    // Weights strip: faint shifting numbers + one-time count-up
+    (function () {
+      var grid = document.getElementById('weights-grid');
+      var count = document.getElementById('weights-count');
+      var TOTAL = 8190735360;
+      function w() {
+        var v = (Math.random() * 2 - 1) * Math.pow(Math.random(), 2) * 1.8;
+        return (v < 0 ? '' : ' ') + v.toFixed(4);
+      }
+      var rows = [];
+      for (var r = 0; r < 6; r++) {
+        var row = [];
+        for (var c = 0; c < 14; c++) row.push(w());
+        rows.push(row);
+      }
+      function paint() { grid.textContent = rows.map(function (row) { return row.join('  '); }).join('\n'); }
+      paint();
+      if (still) return;
+      setInterval(function () {
+        // change a few numbers at a time so it shimmers rather than flickers
+        for (var k = 0; k < 6; k++) rows[Math.floor(Math.random() * rows.length)][Math.floor(Math.random() * 14)] = w();
+        paint();
+      }, 220);
+      var started = false;
+      new IntersectionObserver(function (e, o) {
+        if (!e[0].isIntersecting || started) return;
+        started = true; o.disconnect();
+        var t0 = performance.now(), dur = 1800;
+        (function tick(now) {
+          var x = Math.min(1, (now - t0) / dur), eased = 1 - Math.pow(1 - x, 3);
+          count.textContent = Math.round(TOTAL * eased).toLocaleString('en-US');
+          if (x < 1) requestAnimationFrame(tick);
+        })(t0);
+      }, { threshold: 0.6 }).observe(count);
+    })();
+
+    // Token race at measured speeds
+    var race = document.getElementById('race');
+    var lanes = race.querySelectorAll('.lane-text');
+    var raceText = "A local model is a file of numbers on your own disk. Your laptop reads your prompt and predicts the reply one small piece at a time, with the wifi off.";
+    var rTok = tokens(raceText);
+    var timers = [];
+    function racePlay() {
+      timers.forEach(clearInterval); timers = [];
+      lanes.forEach(function (lane) {
+        // Ghost copy reserves the final height so the page doesn't jump
+        lane.innerHTML = '<span class="ghost"></span><span class="typed"></span>';
+        lane.firstChild.textContent = raceText;
+        var typed = lane.lastChild;
+        if (still) { typed.textContent = raceText; return; }
+        var i = 0;
+        var t = setInterval(function () {
+          if (i >= rTok.length) { clearInterval(t); return; }
+          typed.textContent += rTok[i++];
+        }, 1000 / Number(lane.dataset.tps));
+        timers.push(t);
+      });
+    }
+    document.getElementById('race-replay').addEventListener('click', racePlay);
+    if ('IntersectionObserver' in window) {
+      var seen = false;
+      new IntersectionObserver(function (e, o) {
+        if (e[0].isIntersecting && !seen) { seen = true; racePlay(); o.disconnect(); }
+      }, { threshold: 0.4 }).observe(race);
+    } else {
+      racePlay();
+    }
+
+    // Charts (hand-rolled SVG; values live in the tables too)
+    var NS = 'http://www.w3.org/2000/svg';
+    var GREEN = '#3d7a45', GOLD = '#c9a227', GRID = '#e5e2dd', SURF = '#faf8f5';
+    function el(tag, attrs, parent) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      if (parent) parent.appendChild(e);
+      return e;
+    }
+    function txt(parent, x, y, str, attrs) {
+      var t = el('text', Object.assign({ x: x, y: y }, attrs || {}), parent);
+      t.textContent = str;
+      return t;
+    }
+    function tipFor(fig) {
+      var tip = document.createElement('div');
+      tip.className = 'chart-tip';
+      fig.appendChild(tip);
+      return function (svg, x, y, value, label) {
+        if (value === null) { tip.style.opacity = 0; return; }
+        tip.textContent = '';
+        var b = document.createElement('strong'); b.textContent = value;
+        var sp = document.createElement('span'); sp.textContent = '  ' + label;
+        tip.appendChild(b); tip.appendChild(sp);
+        var r = svg.getBoundingClientRect(), f = fig.getBoundingClientRect();
+        var sx = r.width / svg.viewBox.baseVal.width;
+        var left = r.left - f.left + x * sx, top = r.top - f.top + y * sx - 40;
+        tip.style.left = Math.max(8, Math.min(left - 60, f.width - 190)) + 'px';
+        tip.style.top = top + 'px';
+        tip.style.opacity = 1;
+      };
+    }
+    function bindHit(node, show, svg, x, y, value, label) {
+      node.setAttribute('tabindex', '0');
+      node.setAttribute('aria-label', label + ': ' + value);
+      var on = function () { show(svg, x, y, value, label); };
+      var off = function () { show(svg, 0, 0, null); };
+      node.addEventListener('pointerenter', on); node.addEventListener('focus', on);
+      node.addEventListener('pointerleave', off); node.addEventListener('blur', off);
+    }
+    function animateLine(path) {
+      if (still) return;
+      var len = path.getTotalLength();
+      path.style.strokeDasharray = len; path.style.strokeDashoffset = len;
+      path.classList.add('draw');
+      new IntersectionObserver(function (e, o) {
+        if (e[0].isIntersecting) { path.style.strokeDashoffset = 0; o.disconnect(); }
+      }, { threshold: 0.5 }).observe(path.ownerSVGElement);
+    }
+
+    // A: memory vs context (single series, crosshair)
+    (function () {
+      var fig = document.getElementById('chart-mem'), show = tipFor(fig);
+      var data = [['2K', 2048, 4.8], ['4K', 4096, 5.1], ['8K', 8192, 5.8], ['16K', 16384, 7.0], ['32K', 32768, 9.4]];
+      var W = 600, H = 230, L = 40, R = 56, T = 14, B = 30;
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Line chart: qwen3:8b memory rises from 4.8GB at 2K context to 9.4GB at 32K' }, fig.querySelector('.chart-plot'));
+      var xs = function (i) { return L + i * (W - L - R) / (data.length - 1); };
+      var ys = function (v) { return T + (1 - v / 12) * (H - T - B); };
+      [0, 4, 8, 12].forEach(function (v) {
+        el('line', { x1: L, x2: W - R, y1: ys(v), y2: ys(v), stroke: GRID, 'stroke-width': 1 }, svg);
+        txt(svg, L - 8, ys(v) + 4, v + 'GB', { 'text-anchor': 'end' });
+      });
+      data.forEach(function (d, i) { txt(svg, xs(i), H - 8, d[0] + ' tokens', { 'text-anchor': 'middle' }); });
+      el('line', { x1: L, x2: W - R, y1: ys(5.2), y2: ys(5.2), stroke: '#888', 'stroke-width': 1 }, svg);
+      txt(svg, W - R + 6, ys(5.2) + 4, 'file 5.2GB', {});
+      var path = el('path', { d: data.map(function (d, i) { return (i ? 'L' : 'M') + xs(i) + ' ' + ys(d[2]); }).join(' '), fill: 'none', stroke: GREEN, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+      animateLine(path);
+      var cross = el('line', { y1: T, y2: H - B, stroke: '#888', 'stroke-width': 1, opacity: 0 }, svg);
+      data.forEach(function (d, i) {
+        el('circle', { cx: xs(i), cy: ys(d[2]), r: 4, fill: GREEN, stroke: SURF, 'stroke-width': 2 }, svg);
+      });
+      txt(svg, xs(4) + 8, ys(9.4) + 4, '9.4GB', { class: 'lbl' });
+      data.forEach(function (d, i) {
+        var w = (W - L - R) / (data.length - 1);
+        var hit = el('rect', { x: xs(i) - w / 2, y: T, width: w, height: H - T - B, class: 'hit' }, svg);
+        bindHit(hit, function (s, x, y, v, l) { cross.setAttribute('opacity', v === null ? 0 : 1); cross.setAttribute('x1', xs(i)); cross.setAttribute('x2', xs(i)); show(s, x, y, v, l); },
+          svg, xs(i), ys(d[2]), d[2].toFixed(1) + 'GB', d[1].toLocaleString('en-US') + ' tokens of context');
+      });
+    })();
+
+    // B: speed ceiling curve with measured points
+    (function () {
+      var fig = document.getElementById('chart-speed'), show = tipFor(fig);
+      var W = 600, H = 250, L = 40, R = 20, T = 14, B = 34;
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Line chart: the speed ceiling falls as file size grows; qwen3.5:4b and qwen3:8b land just under it, gpt-oss:20b lands above it' }, fig.querySelector('.chart-plot'));
+      var xs = function (v) { return L + (v / 16) * (W - L - R); };
+      var ys = function (v) { return T + (1 - v / 40) * (H - T - B); };
+      [0, 10, 20, 30, 40].forEach(function (v) {
+        el('line', { x1: L, x2: W - R, y1: ys(v), y2: ys(v), stroke: GRID, 'stroke-width': 1 }, svg);
+        txt(svg, L - 8, ys(v) + 4, v, { 'text-anchor': 'end' });
+      });
+      [0, 4, 8, 12, 16].forEach(function (v) { txt(svg, xs(v), H - 14, v + 'GB', { 'text-anchor': 'middle' }); });
+      txt(svg, L, H - 1, 'model file size', {});
+      var pts = [];
+      for (var x = 3; x <= 16.001; x += 0.25) pts.push((pts.length ? 'L' : 'M') + xs(x) + ' ' + ys(120 / x));
+      var curve = el('path', { d: pts.join(' '), fill: 'none', stroke: '#888', 'stroke-width': 2, 'stroke-linecap': 'round' }, svg);
+      animateLine(curve);
+      var dots = [
+        [4.0, 27.8, GREEN, 'qwen3.5:4b', 'my Air, 32GB', 'end'],
+        [5.2, 19.6, GREEN, 'qwen3:8b', 'my Air, 32GB', 'end'],
+        [13.8, 13.0, GOLD, 'gpt-oss:20b', 'Micro Center, 24GB Air', 'end']
+      ];
+      dots.forEach(function (d) {
+        el('circle', { cx: xs(d[0]), cy: ys(d[1]), r: 5, fill: d[2], stroke: SURF, 'stroke-width': 2 }, svg);
+        txt(svg, xs(d[0]) - 10, ys(d[1]) + (d[0] > 10 ? -10 : 4), d[3], { class: 'lbl', 'text-anchor': 'end' });
+        var hit = el('circle', { cx: xs(d[0]), cy: ys(d[1]), r: 14, class: 'hit' }, svg);
+        bindHit(hit, show, svg, xs(d[0]), ys(d[1]), d[1] + ' tok/s', d[3] + ' · ' + d[4] + ' · ceiling ' + (120 / d[0]).toFixed(1));
+      });
+    })();
+
+    // C: seconds for a ~400-token reply, one labelled bar per setup
+    (function () {
+      var fig = document.getElementById('chart-tasks'), show = tipFor(fig);
+      var rows = [
+        ['gpt-oss:120b', 'M2 Ultra desktop', 85.6, GOLD, 'llama.cpp benchmark'],
+        ['qwen3.5:4b', 'my M4 Air', 27.8, GREEN, 'measured'],
+        ['Llama 2 7B', 'base M4', 24.1, GOLD, 'llama.cpp benchmark'],
+        ['qwen3:8b', 'my M4 Air', 19.6, GREEN, 'measured'],
+        ['gpt-oss:20b', 'M4 Air, 24GB', 13.0, GOLD, 'Micro Center']
+      ];
+      var W = 600, R = 50, rowH = 44, T = 2;
+      var H = T + rows.length * rowH;
+      var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Bar chart of seconds to write a 400-token reply across five model and machine setups' }, fig.querySelector('.chart-plot'));
+      var xs = function (v) { return (v / 32) * (W - R); };
+      function bar(x, y, w, h, color) {
+        // 4px rounded data end, square at the baseline
+        var r = Math.min(4, w);
+        return el('path', { d: 'M' + x + ' ' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ' ' + y + ' ' + (x + w) + ' ' + (y + r) + 'V' + (y + h - r) + 'Q' + (x + w) + ' ' + (y + h) + ' ' + (x + w - r) + ' ' + (y + h) + 'H' + x + 'Z', fill: color, class: 'bar' }, svg);
+      }
+      var all = [];
+      rows.forEach(function (d, i) {
+        var y0 = T + i * rowH, secs = 400 / d[2], w = xs(secs);
+        txt(svg, 0, y0 + 12, d[0] + ' · ' + d[1], { class: 'lbl' });
+        var node = bar(0, y0 + 18, w, 16, d[3]);
+        if (!still) { node.style.transformOrigin = '0 0'; node.style.transform = 'scaleX(0)'; node.style.transition = 'transform 0.8s ease ' + (i * 0.1) + 's'; }
+        all.push(node);
+        txt(svg, w + 6, y0 + 30, secs.toFixed(1) + 's', {});
+        var hit = el('rect', { x: 0, y: y0, width: W - R, height: rowH - 4, class: 'hit' }, svg);
+        bindHit(hit, function (s, x, yy, v, l) { all.forEach(function (n) { n.classList.toggle('dim', v !== null && n !== node); }); show(s, x, yy, v, l); },
+          svg, w, y0 + 18, secs.toFixed(1) + 's', d[0] + ' · ' + d[1] + ' · ' + d[2] + ' tok/s, ' + d[4]);
+      });
+      if (!still) new IntersectionObserver(function (e, o) {
+        if (e[0].isIntersecting) { all.forEach(function (n) { n.style.transform = 'scaleX(1)'; }); o.disconnect(); }
+      }, { threshold: 0.4 }).observe(svg);
+    })();
+  })();
+  </script>
+
+</body>
+</html>

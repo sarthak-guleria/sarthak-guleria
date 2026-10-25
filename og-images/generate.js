@@ -31,6 +31,10 @@ const PAGES = [
     slug: "building-with-claude-as-a-pm",
     title: "Building with Claude as a PM",
   },
+  {
+    slug: "what-the-heck-is-a-local-model",
+    title: "What the Heck is a Local Model?",
+  },
 ];
 
 // ─── HTML template (matches site palette + fonts exactly) ─────────────────────
